@@ -3,16 +3,6 @@ import { GoogleGenAI, Type, GenerateContentResponse } from '@google/genai';
 import { ToastService } from './toast.service';
 import { Game } from '../models/game.model';
 
-declare global {
-  interface Window {
-    process: {
-      env: {
-        API_KEY?: string;
-      };
-    };
-  }
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +18,6 @@ export class GeminiService {
       const key = this.apiKey();
       if (key) {
         localStorage.setItem('gemini_api_key', key);
-        window.process = { env: { API_KEY: key } };
         this.ai.set(new GoogleGenAI({ apiKey: key }));
         this.isApiKeyModalOpen.set(false);
       } else {
