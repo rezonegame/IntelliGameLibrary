@@ -1,4 +1,3 @@
-
 import { Injectable, signal, effect, inject } from '@angular/core';
 import { GoogleGenAI, Type, GenerateContentResponse } from '@google/genai';
 import { ToastService } from './toast.service';
@@ -70,8 +69,18 @@ export class GeminiService {
         },
       });
 
-      const text = response.text.trim();
-      return jsonSchema ? JSON.parse(text) : text;
+      const text = (response.text ?? '').trim();
+      
+      if (jsonSchema) {
+        if (text) {
+          return JSON.parse(text);
+        } else {
+          this.toastService.show('AI 返回了空的响应，无法解析。', 'error');
+          throw new Error('AI returned an empty response for a JSON request.');
+        }
+      }
+      return text;
+      
     } catch (error) {
       console.error('Gemini API 错误:', error);
       this.toastService.show('调用 Gemini API 时发生错误。', 'error');

@@ -1,5 +1,4 @@
-
-import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
 import { GeminiService } from '../services/gemini.service';
 import { GameService } from '../services/game.service';
 import { Game } from '../models/game.model';
@@ -123,7 +122,11 @@ export class InspirationWorkshopComponent {
   formattedResult = computed(() => JSON.stringify(this.aiResult(), null, 2));
 
   constructor() {
-    this.activeTab.subscribe(() => this.aiResult.set(null));
+    effect(() => {
+      // This effect runs whenever activeTab() changes, clearing the previous result.
+      this.activeTab(); 
+      this.aiResult.set(null);
+    });
   }
 
   toggleMechanic(mech: string) {
