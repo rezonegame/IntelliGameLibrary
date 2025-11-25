@@ -1,3 +1,4 @@
+
 import { Injectable, inject, signal, effect, untracked } from '@angular/core';
 import { GoogleGenAI, Type, GenerateContentResponse } from '@google/genai';
 import { ToastService } from './toast.service';
@@ -25,11 +26,10 @@ export class GeminiService {
       if (currentKey) {
         try {
           this.ai.set(new GoogleGenAI({ apiKey: currentKey }));
-          // Use untracked to prevent re-triggering the effect on toastService changes
-          untracked(() => this.toastService.show('Gemini AI 服务已成功初始化。', 'success'));
+          untracked(() => this.toastService.show('Gemini AI 服务已成功初始化', 'success'));
         } catch (e) {
-          console.error("初始化 Gemini AI 失败。", e);
-          untracked(() => this.toastService.show('无效的 API 密钥，AI 服务初始化失败。', 'error'));
+          console.error("初始化 Gemini AI 失败", e);
+          untracked(() => this.toastService.show('无效的API密钥，AI服务初始化失败', 'error'));
           this.ai.set(null);
         }
       } else {
@@ -54,7 +54,7 @@ export class GeminiService {
   private async generateContent(prompt: string, jsonSchema?: any): Promise<any> {
     const aiInstance = this.ai();
     if (!aiInstance) {
-      const errorMessage = 'AI 服务未配置。请在侧边栏设置您的 API 密钥。';
+      const errorMessage = 'AI服务未配置，请设置您的API密钥';
       this.toastService.show(errorMessage, 'error');
       throw new Error(errorMessage);
     }
@@ -76,7 +76,7 @@ export class GeminiService {
         if (text) {
           return JSON.parse(text);
         } else {
-          this.toastService.show('AI 返回了空的响应，无法解析。', 'error');
+          this.toastService.show('AI 返回了空的响应，无法解析', 'error');
           throw new Error('AI returned an empty response for a JSON request.');
         }
       }
@@ -85,15 +85,15 @@ export class GeminiService {
     } catch (error: any) {
       console.error('Gemini API 错误:', error);
       const message = error.message?.includes('API key not valid') 
-        ? 'API 密钥无效。请检查您的密钥。'
-        : '调用 Gemini API 时发生错误。';
+        ? 'API 密钥无效，请检查您的密钥'
+        : '调用 Gemini API 时发生错误';
       this.toastService.show(message, 'error');
       throw error;
     }
   }
 
   async identifyGame(description: string): Promise<{ name: string; isPublicDomain: boolean; confidenceScore: number; analysis: string; fullGameData?: Game } | null> {
-    const prompt = `你是一位桌面游戏历史和设计专家。请分析以下描述：“${description}”。请以 JSON 格式回应，所有字符串值都必须是简体中文。JSON 对象必须包含以下字段：“name”（游戏名），“isPublicDomain”（是否为公共领域，布尔值），“confidenceScore”（置信度，0.0到1.0），“analysis”（分析摘要）。如果游戏属于公共领域，还需包含 “fullGameData” 对象。该对象必须符合此结构：{id: number, name: string, image: string, description: string, players: {min: number, max: number}, playTime: {min: number, max: number}, complexity: string, category: string, mechanics: string[], componentsDescription: string, history?: string, rules: {objective: string, setup: string, gameplay: string}, aiAnalysis: {coreFun: string, keyDecisions: string, potentialFlaws: string, designImpact: string}, variants: string[]}。id 应为一个较大的随机数。对于 image 字段，请提供一个适合用于图片搜索的英文关键词。对于 componentsDescription 字段，请提供详细的配件说明段落。对于 history 字段，如果该游戏有明确的历史来源，请提供一段准确的描述，否则省略该字段。对于 rules 对象，请分别填写游戏目标、设置和玩法描述。`;
+    const prompt = `你是一位桌面游戏历史和设计专家。请分析以下描述：“${description}”。请以 JSON 格式回应，所有字符串值都必须是简体中文。JSON 对象必须包含以下字段：“name”（游戏名），“isPublicDomain”（是否为公共领域，布尔值），“confidenceScore”（置信度，0.0到1.0），“analysis”（分析摘要）。如果游戏属于公共领域，还需包含 “fullGameData” 对象。该对象必须符合此结构：{id: number, name: string, originalName?: string, image: string, description: string, players: {min: number, max: number}, playTime: {min: number, max: number}, complexity: string, category: string, mechanics: string[], componentsDescription: string, historicalStory?: string, modificationSuggestion?: {themeSwaps: string[], mechanicFusions: string[]}, rules: {objective: string, setup: string, gameplay: string}, aiAnalysis: {coreFun: string, keyDecisions: string, potentialFlaws: string, designImpact: string}, variants: string[]}。id 应为一个较大的随机数。对于 image 字段，返回一个空字符串。对于 componentsDescription 字段，请提供详细的配件说明段落。对于 historicalStory 字段，请提供一段详实且有趣的史实或故事。对于 originalName，请提供游戏的原始或英文名称。对于 aiAnalysis.designImpact 字段，请在分析设计影响的同时，明确说明这款游戏可以锻炼或教授玩家的何种能力。对于 modificationSuggestion 对象，请在 themeSwaps 和 mechanicFusions 数组中分别提供至少两条丰富且有创意的改造建议。如果字段不适用，请省略。`;
 
     const schema = {
       type: Type.OBJECT,
@@ -105,14 +105,25 @@ export class GeminiService {
         fullGameData: {
             type: Type.OBJECT,
             properties: {
-                id: { type: Type.NUMBER }, name: { type: Type.STRING }, image: { type: Type.STRING },
+                id: { type: Type.NUMBER }, 
+                name: { type: Type.STRING }, 
+                originalName: { type: Type.STRING },
+                image: { type: Type.STRING },
                 description: { type: Type.STRING },
                 players: { type: Type.OBJECT, properties: { min: { type: Type.NUMBER }, max: { type: Type.NUMBER } } },
                 playTime: { type: Type.OBJECT, properties: { min: { type: Type.NUMBER }, max: { type: Type.NUMBER } } },
-                complexity: { type: Type.STRING }, category: { type: Type.STRING },
+                complexity: { type: Type.STRING }, 
+                category: { type: Type.STRING },
                 mechanics: { type: Type.ARRAY, items: { type: Type.STRING } },
                 componentsDescription: { type: Type.STRING },
-                history: { type: Type.STRING },
+                historicalStory: { type: Type.STRING },
+                modificationSuggestion: { 
+                  type: Type.OBJECT,
+                  properties: {
+                    themeSwaps: { type: Type.ARRAY, items: { type: Type.STRING } },
+                    mechanicFusions: { type: Type.ARRAY, items: { type: Type.STRING } }
+                  }
+                },
                 rules: {
                     type: Type.OBJECT,
                     properties: {
@@ -124,7 +135,12 @@ export class GeminiService {
                 },
                 aiAnalysis: {
                     type: Type.OBJECT,
-                    properties: { coreFun: { type: Type.STRING }, keyDecisions: { type: Type.STRING }, potentialFlaws: { type: Type.STRING }, designImpact: { type: Type.STRING } }
+                    properties: { 
+                        coreFun: { type: Type.STRING }, 
+                        keyDecisions: { type: Type.STRING }, 
+                        potentialFlaws: { type: Type.STRING }, 
+                        designImpact: { type: Type.STRING } 
+                    }
                 },
                 variants: { type: Type.ARRAY, items: { type: Type.STRING } }
             },

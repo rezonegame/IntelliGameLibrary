@@ -34,19 +34,42 @@ import { Game } from '../models/game.model';
                     <h4 class="font-bold text-lg mb-2 text-gray-100">游戏简介</h4>
                     <p class="text-gray-300 leading-relaxed">{{ game()!.description }}</p>
                   </div>
+
+                  <div>
+                    <h4 class="font-bold text-lg mb-2 text-gray-100">配件说明</h4>
+                    <p class="text-gray-300 leading-relaxed">{{ game()!.componentsDescription }}</p>
+                  </div>
+                  
+                  @if(game()!.history) {
+                    <div>
+                        <h4 class="font-bold text-lg mb-2 text-gray-100">历史来源</h4>
+                        <p class="text-gray-300 leading-relaxed">{{ game()!.history }}</p>
+                    </div>
+                  }
+
                   <div>
                     <h4 class="font-bold text-lg mb-2 text-gray-100">规则概述</h4>
-                    <p class="text-gray-300 whitespace-pre-wrap leading-relaxed">{{ game()!.rules }}</p>
+                    <div class="space-y-4 text-gray-300 leading-relaxed">
+                        <div>
+                            <h5 class="font-semibold text-indigo-300">游戏目标</h5>
+                            <p class="whitespace-pre-wrap pl-2 border-l-2 border-indigo-400/30 mt-1">{{ game()!.rules.objective }}</p>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-indigo-300">游戏设置</h5>
+                            <p class="whitespace-pre-wrap pl-2 border-l-2 border-indigo-400/30 mt-1">{{ game()!.rules.setup }}</p>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-indigo-300">游戏玩法</h5>
+                            <p class="whitespace-pre-wrap pl-2 border-l-2 border-indigo-400/30 mt-1">{{ game()!.rules.gameplay }}</p>
+                        </div>
+                    </div>
                   </div>
                   
                   <div>
-                    <h4 class="font-bold text-lg mb-2 text-gray-100">标签</h4>
+                    <h4 class="font-bold text-lg mb-2 text-gray-100">游戏机制</h4>
                     <div class="flex flex-wrap gap-2">
                         @for(mechanic of game()!.mechanics; track mechanic) {
                           <span class="bg-indigo-600/80 px-3 py-1 rounded-full text-sm font-medium">{{ mechanic }}</span>
-                        }
-                        @for(component of game()!.components; track component) {
-                          <span class="bg-teal-600/80 px-3 py-1 rounded-full text-sm font-medium">{{ component }}</span>
                         }
                     </div>
                   </div>

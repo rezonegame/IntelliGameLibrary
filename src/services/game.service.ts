@@ -2,7 +2,9 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { Game } from '../models/game.model';
 import { ToastService } from './toast.service';
-import { INITIAL_GAMES } from './game-data';
+// FIX: Corrected import path for INITIAL_GAMES from the refactored data location.
+import { INITIAL_GAMES } from '../features/game-library/data';
+
 
 @Injectable({
   providedIn: 'root'

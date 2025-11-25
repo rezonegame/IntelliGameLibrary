@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameBrowserComponent } from './components/game-browser.component';
 import { AiIdentifierComponent } from './components/ai-identifier.component';
@@ -26,12 +26,17 @@ type AppView = 'browser' | 'identifier' | 'workshop';
 export class AppComponent {
   geminiService = inject(GeminiService);
   currentView = signal<AppView>('browser');
+  isApiKeyModalOpen = signal(false);
 
   setView(view: AppView) {
     this.currentView.set(view);
   }
 
   openApiKeyModal() {
-    this.geminiService.isApiKeyModalOpen.set(true);
+    this.isApiKeyModalOpen.set(true);
+  }
+
+  closeApiKeyModal() {
+    this.isApiKeyModalOpen.set(false);
   }
 }

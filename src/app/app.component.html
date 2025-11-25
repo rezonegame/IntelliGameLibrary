@@ -1,0 +1,23 @@
+<div class="min-h-screen bg-slate-50 text-slate-800 flex">
+  <!-- Sidebar -->
+  <app-sidebar 
+    class="w-64 flex-shrink-0"
+    [currentView]="currentView()" 
+    (setView)="setView($event)"
+    (openApiKeyModal)="openApiKeyModal()">
+  </app-sidebar>
+
+  <!-- Main Content -->
+  <main class="flex-1 overflow-y-auto">
+    @switch (currentView()) {
+      @case ('browser') { <app-game-browser></app-game-browser> }
+      @case ('identifier') { <app-ai-identifier></app-ai-identifier> }
+      @case ('workshop') { <app-inspiration-workshop></app-inspiration-workshop> }
+    }
+  </main>
+</div>
+
+@if (isApiKeyModalOpen()) {
+  <app-api-key-modal (close)="closeApiKeyModal()"></app-api-key-modal>
+}
+<app-toast-container></app-toast-container>

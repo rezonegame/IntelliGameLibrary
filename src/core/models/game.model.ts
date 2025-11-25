@@ -5,9 +5,15 @@ export interface GameRules {
   gameplay: string;
 }
 
+export interface ModificationSuggestion {
+  themeSwaps: string[];
+  mechanicFusions: string[];
+}
+
 export interface Game {
   id: number;
   name: string;
+  originalName?: string;
   image: string;
   description: string;
   players: {
@@ -22,7 +28,8 @@ export interface Game {
   category: string;
   mechanics: string[];
   componentsDescription: string;
-  history?: string;
+  historicalStory?: string;
+  modificationSuggestion?: ModificationSuggestion;
   rules: GameRules;
   aiAnalysis: AiAnalysis;
   variants: string[];
