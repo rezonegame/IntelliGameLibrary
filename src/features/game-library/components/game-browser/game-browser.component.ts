@@ -1,4 +1,3 @@
-
 import { Component, ChangeDetectionStrategy, inject, signal, computed, effect, untracked } from '@angular/core';
 import { Game } from '../../../../core/models/game.model';
 import { GameService } from '../../services/game.service';

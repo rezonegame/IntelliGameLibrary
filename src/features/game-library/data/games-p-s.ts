@@ -1,5 +1,3 @@
-
-
 import { Game } from '../../../core/models/game.model';
 import { createRandomPlaceholderSVG } from './placeholder';
 

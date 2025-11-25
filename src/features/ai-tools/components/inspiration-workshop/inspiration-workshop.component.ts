@@ -109,7 +109,6 @@ export class InspirationWorkshopComponent {
   aiResult = signal<any>(null);
 
   // Mechanic Fusion state
-  // FIX: Explicitly type sort parameters to resolve 'unknown' type error.
   allMechanics = computed(() => [...new Set(this.gameService.games().flatMap(g => g.mechanics))].sort((a: string, b: string) => a.localeCompare(b, 'zh-Hans-CN')));
   selectedMechanics = signal<string[]>([]);
   

@@ -1,4 +1,3 @@
-
 export interface GameRules {
   objective: string;
   setup: string;

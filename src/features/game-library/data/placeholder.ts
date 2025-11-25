@@ -1,4 +1,3 @@
-
 const PALETTE = ['#06b6d4', '#0891b2', '#0e7490', '#155e75', '#64748b', '#475569'];
 
 const getRandom = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;

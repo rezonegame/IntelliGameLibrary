@@ -1,4 +1,3 @@
-
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { Game } from '../../../../core/models/game.model';
 import { CommonModule } from '@angular/common';

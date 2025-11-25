@@ -1,5 +1,4 @@
 
-
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { GeminiService } from '../../../../core/services/gemini.service';
 import { GameService } from '../../../game-library/services/game.service';

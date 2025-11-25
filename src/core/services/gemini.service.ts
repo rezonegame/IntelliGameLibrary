@@ -1,4 +1,3 @@
-
 import { Injectable, inject, signal, effect, untracked } from '@angular/core';
 import { GoogleGenAI, Type, GenerateContentResponse } from '@google/genai';
 import { ToastService } from './toast.service';

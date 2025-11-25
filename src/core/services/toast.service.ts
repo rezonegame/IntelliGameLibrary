@@ -1,4 +1,3 @@
-
 import { Injectable, signal } from '@angular/core';
 
 export interface Toast {
