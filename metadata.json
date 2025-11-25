@@ -1,0 +1,5 @@
+{
+  "name": "智游图鉴 (Intelli-Game Library)",
+  "description": "一个由 Google Gemini AI 驱动的智能公共领域桌面游戏资料库。探索海量游戏，通过描述识别游戏，并为您的新游戏设计激发创意火花。",
+  "requestFramePermissions": []
+}
