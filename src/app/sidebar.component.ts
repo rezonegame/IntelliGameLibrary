@@ -52,7 +52,8 @@ import { AppView } from './app.component';
               配置 AI 服务
           </button>
           <div class="text-center text-xs text-slate-400 pt-2">
-              <p>由 来福的鱼塘（欢迎加我的公众号聊天） 驱动</p>
+              <p>由 <span style="font-weight:bolder;">来福的鱼塘</span> 驱动</p>
+              <p>（欢迎加我的公众号聊天）</p>
           </div>
       </div>
     </aside>
