@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
-import { GeminiService } from '../../../../core/services/gemini.service';
+import { AiService } from '../../../../core/ai/ai.service';
 import { GameService } from '../../../game-library/services/game.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -89,8 +89,63 @@ import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
         @if (aiResult()) {
           <div class="mt-8 bg-white p-6 rounded-xl shadow-sm animate-fade-in border border-slate-200">
             <h3 class="text-2xl font-bold mb-4 text-cyan-700">AI 生成的概念</h3>
-            <div class="whitespace-pre-wrap bg-slate-50 p-4 rounded-lg text-slate-700 font-mono text-sm border border-slate-200">
-              <pre>{{ formattedResult() }}</pre>
+            <div class="space-y-6 text-slate-700 leading-relaxed">
+              @switch (activeTab()) {
+                @case ('机制融合') {
+                  @if(aiResult().conceptName) {
+                    <div>
+                      <h4 class="text-lg font-semibold text-slate-800">{{ aiResult().conceptName }}</h4>
+                      <p class="text-sm text-slate-500 italic mt-1 mb-3">"{{ aiResult().pitch }}"</p>
+                      <div class="space-y-3 text-base text-slate-600">
+                        <p><strong>核心机制:</strong> {{ aiResult().coreMechanics }}</p>
+                        <p><strong>游戏流程:</strong> {{ aiResult().gameplayLoop }}</p>
+                        <p><strong>胜利条件:</strong> {{ aiResult().winningCondition }}</p>
+                        <div>
+                          <strong class="block mb-1">所需配件:</strong>
+                          <ul class="list-disc list-inside pl-2">
+                            @for(item of aiResult().components; track item) { <li>{{ item }}</li> }
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                }
+                @case ('主题改造') {
+                  @if(aiResult().newName) {
+                    <div>
+                      <h4 class="text-lg font-semibold text-slate-800">{{ aiResult().newName }}</h4>
+                      <p class="text-base mt-2"><strong>世界观设定:</strong> {{ aiResult().worldbuilding }}</p>
+                      <div class="mt-3">
+                        <strong class="block mb-1">配件重命名:</strong>
+                        <ul class="list-disc list-inside pl-2 text-slate-600">
+                          @for(item of objectKeys(aiResult().componentRenaming); track item) {
+                            <li>{{ item }}: {{ aiResult().componentRenaming[item] }}</li>
+                          }
+                        </ul>
+                      </div>
+                      <div class="mt-3">
+                        <strong class="block mb-1">主题规则变体:</strong>
+                        <ul class="list-disc list-inside pl-2 text-slate-600">
+                          @for(item of aiResult().thematicRuleVariants; track item) { <li>{{ item }}</li> }
+                        </ul>
+                      </div>
+                    </div>
+                  }
+                }
+                @case ('“假如”模拟器') {
+                  @if(aiResult().impactOnStrategy) {
+                    <div class="space-y-3 text-base text-slate-600">
+                        <p><strong>策略影响:</strong> {{ aiResult().impactOnStrategy }}</p>
+                        <p><strong>平衡性影响:</strong> {{ aiResult().impactOnBalance }}</p>
+                        <p><strong>节奏影响:</strong> {{ aiResult().impactOnPacing }}</p>
+                        <p><strong>玩家体验影响:</strong> {{ aiResult().impactOnPlayerExperience }}</p>
+                        <div class="pt-3 mt-3 border-t border-slate-200">
+                          <p class="font-semibold text-slate-700"><strong>综合结论:</strong> {{ aiResult().overallConclusion }}</p>
+                        </div>
+                    </div>
+                  }
+                }
+              }
             </div>
           </div>
         }
@@ -100,13 +155,16 @@ import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InspirationWorkshopComponent {
-  geminiService = inject(GeminiService);
+  aiService = inject(AiService);
   gameService = inject(GameService);
 
   tabs = ['机制融合', '主题改造', '“假如”模拟器'];
   activeTab = signal(this.tabs[0]);
   isLoading = signal(false);
   aiResult = signal<any>(null);
+
+  // Expose Object.keys to the template
+  objectKeys = Object.keys;
 
   // Mechanic Fusion state
   allMechanics = computed(() => [...new Set(this.gameService.games().flatMap(g => g.mechanics))].sort((a: string, b: string) => a.localeCompare(b, 'zh-Hans-CN')));
@@ -119,8 +177,6 @@ export class InspirationWorkshopComponent {
   // "What If" Simulator state
   whatIfGame = '国际跳棋';
   whatIfRule = '';
-  
-  formattedResult = computed(() => JSON.stringify(this.aiResult(), null, 2));
 
   constructor() {
     effect(() => {
@@ -137,10 +193,6 @@ export class InspirationWorkshopComponent {
   }
 
   private async runGeneration(generator: () => Promise<any>) {
-      if (!this.geminiService.isConfigured()) {
-        this.geminiService['toastService'].show('请先设置您的 API 密钥', 'error');
-        return;
-      }
       this.isLoading.set(true);
       this.aiResult.set(null);
       try {
@@ -154,14 +206,14 @@ export class InspirationWorkshopComponent {
   }
 
   generateFusion() {
-    this.runGeneration(() => this.geminiService.fuseMechanics(this.selectedMechanics()));
+    this.runGeneration(() => this.aiService.fuseMechanics(this.selectedMechanics()));
   }
 
   generateRemodel() {
-    this.runGeneration(() => this.geminiService.remodelTheme(this.remodelGame, this.remodelTheme));
+    this.runGeneration(() => this.aiService.remodelTheme(this.remodelGame, this.remodelTheme));
   }
 
   generateSimulation() {
-    this.runGeneration(() => this.geminiService.simulateRuleChange(this.whatIfGame, this.whatIfRule));
+    this.runGeneration(() => this.aiService.simulateRuleChange(this.whatIfGame, this.whatIfRule));
   }
 }

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GeminiService } from '../core/services/gemini.service';
+import { AiService } from '../core/ai/ai.service';
 import { AppView } from './app.component';
 
 @Component({
@@ -36,19 +36,18 @@ import { AppView } from './app.component';
       
       <div class="border-t border-slate-200 pt-5 space-y-3">
           <div class="px-2 text-sm text-slate-500">
-              <p>API Key 状态: 
-                  @if(geminiService.isConfigured()) {
-                    <span class="text-emerald-500 font-semibold">已配置</span>
-                  } @else {
-                    <span class="text-amber-500 font-semibold">未配置</span>
-                  }
+              <p>AI 服务: 
+                  <span class="font-semibold" [class]="aiService.isConfigured() ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ aiService.getProviderName(aiService.activeProviderType()) }}
+                    {{ aiService.isConfigured() ? '(已激活)' : '(未配置)' }}
+                  </span>
               </p>
           </div>
           <button (click)="openApiKeyModal.emit()" class="w-full text-sm text-center text-cyan-600 hover:text-cyan-700 transition-colors font-medium">
-              设置 API Key
+              配置 AI 服务
           </button>
           <div class="text-center text-xs text-slate-400 pt-2">
-              <p>由 Google Gemini AI 优雅驱动</p>
+              <p>由 智研家 驱动</p>
           </div>
       </div>
     </aside>
@@ -56,7 +55,7 @@ import { AppView } from './app.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
-  geminiService = inject(GeminiService);
+  aiService = inject(AiService);
   
   currentView = input.required<AppView>();
   setView = output<AppView>();

@@ -1,6 +1,5 @@
-
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { GeminiService } from '../../../../core/services/gemini.service';
+import { AiService } from '../../../../core/ai/ai.service';
 import { GameService } from '../../../game-library/services/game.service';
 import { Game } from '../../../../core/models/game.model';
 import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
@@ -73,7 +72,7 @@ type AddButtonState = 'idle' | 'adding';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiIdentifierComponent {
-  geminiService = inject(GeminiService);
+  aiService = inject(AiService);
   gameService = inject(GameService);
 
   description = signal('');
@@ -83,15 +82,11 @@ export class AiIdentifierComponent {
 
   async identifyGame() {
     if (!this.description().trim()) return;
-    if (!this.geminiService.isConfigured()) {
-      this.geminiService['toastService'].show('请先设置您的 API 密钥', 'error');
-      return;
-    }
 
     this.isLoading.set(true);
     this.result.set(null);
     try {
-      const res = await this.geminiService.identifyGame(this.description());
+      const res = await this.aiService.identifyGame(this.description());
       this.result.set(res);
     } catch (error) {
       console.error("识别失败", error);
@@ -106,11 +101,9 @@ export class AiIdentifierComponent {
 
     this.addButtonState.set('adding');
     try {
-      // Set the placeholder image
       const finalGameData = { ...gameData, image: createRandomPlaceholderSVG() };
       this.gameService.addGame(finalGameData);
 
-      // Reset state
       this.result.set(null);
       this.description.set('');
     } catch (error) {
