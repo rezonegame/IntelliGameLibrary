@@ -36,7 +36,19 @@
   </main>
 </div>
 
+<!-- Feedback FAB -->
+<button (click)="openFeedbackModal()" 
+        title="留言反馈"
+        class="fixed bottom-6 right-6 bg-cyan-600 text-white p-4 rounded-full shadow-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 z-40 transition-transform hover:scale-110">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428a1 1 0 00.475 0l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+  </svg>
+</button>
+
 @if (isApiKeyModalOpen()) {
   <app-api-key-modal (close)="closeApiKeyModal()"></app-api-key-modal>
+}
+@if (isFeedbackModalOpen()) {
+  <app-message-board-modal (close)="closeFeedbackModal()"></app-message-board-modal>
 }
 <app-toast-container></app-toast-container>

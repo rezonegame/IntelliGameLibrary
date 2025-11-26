@@ -5,6 +5,7 @@ import { GameCardComponent } from '../game-card/game-card.component';
 import { GameDetailModalComponent } from '../game-detail-modal/game-detail-modal.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 
 @Component({
   selector: 'app-game-browser',
@@ -101,6 +102,7 @@ import { CommonModule } from '@angular/common';
 })
 export class GameBrowserComponent {
   gameService = inject(GameService);
+  analyticsService = inject(AnalyticsService);
   selectedGame = signal<Game | null>(null);
 
   // Filter state
@@ -151,6 +153,7 @@ export class GameBrowserComponent {
 
   selectGame(game: Game) {
     this.selectedGame.set(game);
+    this.analyticsService.logEvent('gameView', game.name);
   }
 
   clearSelectedGame() {
