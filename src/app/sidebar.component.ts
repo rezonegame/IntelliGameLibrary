@@ -8,11 +8,16 @@ import { AppView } from './app.component';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <aside class="bg-white p-6 flex flex-col justify-between shadow-sm border-r border-slate-200">
+    <aside class="bg-white p-6 flex flex-col justify-between shadow-sm border-r border-slate-200 h-full">
       <div>
-        <div class="flex items-center mb-12">
-          <svg class="w-10 h-10 text-cyan-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2 7L12 12L22 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 12V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          <h1 class="text-2xl font-bold text-cyan-700 ml-2">智游图鉴</h1>
+        <div class="flex items-center justify-between mb-12">
+          <div class="flex items-center">
+            <svg class="w-10 h-10 text-cyan-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2 7L12 12L22 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 12V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <h1 class="text-2xl font-bold text-cyan-700 ml-2">智游图鉴</h1>
+          </div>
+          <button (click)="closeMenu.emit()" class="md:hidden text-slate-500 hover:text-slate-800 text-3xl p-1 -mr-2">
+            &times;
+          </button>
         </div>
 
         <nav class="space-y-3">
@@ -60,4 +65,5 @@ export class SidebarComponent {
   currentView = input.required<AppView>();
   setView = output<AppView>();
   openApiKeyModal = output();
+  closeMenu = output();
 }

@@ -27,13 +27,16 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
 export class AppComponent {
   currentView = signal<AppView>('browser');
   isApiKeyModalOpen = signal(false);
+  isMobileMenuOpen = signal(false);
 
   setView(view: AppView) {
     this.currentView.set(view);
+    this.isMobileMenuOpen.set(false);
   }
 
   openApiKeyModal() {
     this.isApiKeyModalOpen.set(true);
+    this.isMobileMenuOpen.set(false);
   }
 
   closeApiKeyModal() {
