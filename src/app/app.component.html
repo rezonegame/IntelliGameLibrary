@@ -36,6 +36,46 @@
   </main>
 </div>
 
+<!-- Help & Updates FAB -->
+<button (click)="isHelpVisible.set(true)" 
+        title="帮助与更新"
+        [class]="'fixed bottom-6 left-6 bg-white border border-slate-200 text-slate-500 p-3 rounded-full shadow-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 z-40 transition-all hover:scale-110 ' + (isHelpVisible() ? 'opacity-0 pointer-events-none' : 'opacity-100')">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+</button>
+
+<!-- Help Panel -->
+@if (isHelpVisible()) {
+  <div class="fixed bottom-6 left-6 w-full max-w-xs sm:max-w-sm bg-white rounded-xl shadow-2xl border border-slate-200 z-40 animate-fade-in-up text-sm">
+    <div class="p-4 border-b border-slate-200 flex justify-between items-center">
+      <h3 class="font-bold text-base text-cyan-700">使用说明 & 更新日志</h3>
+      <button (click)="isHelpVisible.set(false)" class="text-slate-400 hover:text-slate-600 transition-colors text-2xl font-light p-1 -m-1">&times;</button>
+    </div>
+    <div class="p-4 max-h-64 overflow-y-auto text-slate-600 space-y-4">
+      <div>
+        <h4 class="font-semibold text-slate-800 mb-2">快速上手</h4>
+        <ul class="list-disc list-inside space-y-1.5 pl-1">
+          <li><b>浏览典藏：</b>探索和筛选公共版权游戏。</li>
+          <li><b>AI 识别：</b>描述一款游戏，让 AI 帮你识别。</li>
+          <li><b>激发灵感：</b>在工坊中融合机制、改造主题。</li>
+          <li><b>配置服务：</b>点击侧边栏“配置 AI 服务”以启用 AI 功能。</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-800 mb-2">更新日志</h4>
+        <ul class="list-disc list-inside space-y-1.5 pl-1">
+          <li><b>v2.1:</b> 新增赌场、惠斯特、争上游三款游戏。</li>
+          <li><b>v2.0:</b> 升级为全局搜索，可检索所有游戏文本。</li>
+          <li><b>v1.5:</b> 引入多 AI 服务商支持 (Gemini, OpenAI 等)。</li>
+          <li><b>v1.0:</b> 应用发布。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+}
+
+
 <!-- Feedback FAB -->
 <button (click)="openFeedbackModal()" 
         title="留言反馈"

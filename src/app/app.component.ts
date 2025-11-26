@@ -25,6 +25,21 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
     MessageBoardModalComponent,
   ],
   templateUrl: './app.component.html',
+  styles: [`
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .animate-fade-in-up {
+      animation: fade-in-up 0.2s ease-out forwards;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
@@ -33,6 +48,7 @@ export class AppComponent {
   isApiKeyModalOpen = signal(false);
   isMobileMenuOpen = signal(false);
   isFeedbackModalOpen = signal(false);
+  isHelpVisible = signal(false);
 
   constructor() {
     this.analyticsService.logEvent('pageView', 'browser'); // Log initial view
