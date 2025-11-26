@@ -36,6 +36,8 @@
     "index.tsx"
   ],
   "include": [
-    "src/**/*.ts"
+    "src/app/**/*.ts",
+    "src/core/**/*.ts",
+    "src/features/**/*.ts"
   ]
 }
