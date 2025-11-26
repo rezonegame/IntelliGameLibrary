@@ -4,8 +4,10 @@ import { AiProvider, AiProviderType, AI_PROVIDERS } from './ai-provider.interfac
 import { GeminiProvider } from './providers/gemini.provider';
 import { OpenAIProvider } from './providers/openai.provider';
 import { DeepSeekProvider } from './providers/deepseek.provider';
+import { ClaudeProvider } from './providers/claude.provider';
 
 const API_KEYS_STORAGE_ITEM = 'ai-api-keys';
+const CUSTOM_ENDPOINTS_STORAGE_ITEM = 'ai-custom-endpoints';
 const ACTIVE_PROVIDER_STORAGE_ITEM = 'ai-active-provider';
 
 @Injectable({ providedIn: 'root' })
@@ -14,10 +16,12 @@ export class AiService {
   private geminiProvider = inject(GeminiProvider);
   private openAiProvider = inject(OpenAIProvider);
   private deepSeekProvider = inject(DeepSeekProvider);
+  private claudeProvider = inject(ClaudeProvider);
   
-  private apiKeys = signal<Record<AiProviderType, string>>({ gemini: '', openai: '', deepseek: '' });
+  private apiKeys = signal<Partial<Record<AiProviderType, string>>>({});
+  private customEndpoints = signal<Partial<Record<AiProviderType, string>>>({});
   private activeProvider = signal<AiProvider | null>(null);
-  activeProviderType = signal<AiProviderType>('gemini');
+  activeProviderType = signal<AiProviderType>('deepseek');
 
   constructor() {
     this.loadStateFromStorage();
@@ -27,13 +31,14 @@ export class AiService {
   private loadStateFromStorage() {
     const storedKeys = localStorage.getItem(API_KEYS_STORAGE_ITEM);
     if (storedKeys) {
-      try {
-        const parsedKeys = JSON.parse(storedKeys);
-        this.apiKeys.update(keys => ({...keys, ...parsedKeys}));
-      } catch {
-        // Use default if parsing fails
-      }
+      try { this.apiKeys.update(keys => ({...keys, ...JSON.parse(storedKeys)})); } catch {}
     }
+
+    const storedEndpoints = localStorage.getItem(CUSTOM_ENDPOINTS_STORAGE_ITEM);
+    if (storedEndpoints) {
+      try { this.customEndpoints.update(endpoints => ({...endpoints, ...JSON.parse(storedEndpoints)})); } catch {}
+    }
+
     const storedProvider = localStorage.getItem(ACTIVE_PROVIDER_STORAGE_ITEM);
     if (storedProvider && AI_PROVIDERS.some(p => p.id === storedProvider)) {
       this.activeProviderType.set(storedProvider as AiProviderType);
@@ -44,47 +49,87 @@ export class AiService {
     return this.apiKeys()[provider] || '';
   }
 
-  async setApiKeyAndSwitch(providerId: AiProviderType, key: string): Promise<void> {
+  getCustomEndpoint(provider: AiProviderType): string {
+    return this.customEndpoints()[provider] || '';
+  }
+
+  async setApiKeyAndSwitch(providerId: AiProviderType, key: string, endpoint?: string): Promise<void> {
     this.apiKeys.update(keys => ({ ...keys, [providerId]: key }));
     localStorage.setItem(API_KEYS_STORAGE_ITEM, JSON.stringify(this.apiKeys()));
+
+    if (providerId === 'custom' && endpoint) {
+      this.customEndpoints.update(endpoints => ({ ...endpoints, [providerId]: endpoint }));
+      localStorage.setItem(CUSTOM_ENDPOINTS_STORAGE_ITEM, JSON.stringify(this.customEndpoints()));
+    }
     
     await this.switchProvider(providerId);
+  }
+
+  async deleteApiKey(providerId: AiProviderType): Promise<void> {
+    this.apiKeys.update(keys => ({ ...keys, [providerId]: undefined }));
+    localStorage.setItem(API_KEYS_STORAGE_ITEM, JSON.stringify(this.apiKeys()));
+    
+    if (this.activeProviderType() === providerId) {
+      this.activeProvider.set(null);
+      this.toastService.show(`${this.getProviderName(providerId)} API 密钥已删除，服务已停用`, 'info');
+    } else {
+      this.toastService.show(`${this.getProviderName(providerId)} API 密钥已删除`, 'info');
+    }
   }
 
   async switchProvider(providerId: AiProviderType): Promise<void> {
     this.activeProviderType.set(providerId);
     localStorage.setItem(ACTIVE_PROVIDER_STORAGE_ITEM, providerId);
-    this.activeProvider.set(null); // Clear current provider
+    this.activeProvider.set(null);
 
     const key = this.getApiKey(providerId);
     if (!key) {
-      this.toastService.show(`${this.getProviderName(providerId)} 需要 API 密钥`, 'info');
+      // Don't show toast on initial load
       return;
     }
     
-    let provider: AiProvider | null = null;
+    let providerInstance: AiProvider | null = null;
+    let initPromise: Promise<boolean>;
+
     switch (providerId) {
       case 'gemini':
-        provider = this.geminiProvider;
+        providerInstance = this.geminiProvider;
+        initPromise = providerInstance.init(key);
         break;
       case 'openai':
-        provider = this.openAiProvider;
+        providerInstance = this.openAiProvider;
+        initPromise = (providerInstance as OpenAIProvider).init(key);
         break;
       case 'deepseek':
-        provider = this.deepSeekProvider;
+        providerInstance = this.deepSeekProvider;
+        initPromise = providerInstance.init(key);
+        break;
+      case 'claude':
+        providerInstance = this.claudeProvider;
+        initPromise = providerInstance.init(key);
+        break;
+      case 'custom':
+        providerInstance = this.openAiProvider;
+        const endpoint = this.getCustomEndpoint('custom');
+        if (!endpoint) {
+          this.toastService.show('自定义 API 需要设置端点地址', 'error');
+          return;
+        }
+        initPromise = (providerInstance as OpenAIProvider).init(key, endpoint);
         break;
       default:
         this.toastService.show(`暂不支持 ${this.getProviderName(providerId)}`, 'error');
         return;
     }
 
-    if (provider) {
-      const success = await provider.init(key);
+    if (providerInstance) {
+      const success = await initPromise;
       if (success) {
-        this.activeProvider.set(provider);
+        this.activeProvider.set(providerInstance);
         this.toastService.show(`${this.getProviderName(providerId)} 服务已成功初始化`, 'success');
       } else {
-        this.toastService.show(`无效的API密钥，${this.getProviderName(providerId)} 服务初始化失败`, 'error');
+        this.activeProvider.set(null);
+        this.toastService.show(`无效的API密钥或端点，${this.getProviderName(providerId)} 服务初始化失败`, 'error');
       }
     }
   }

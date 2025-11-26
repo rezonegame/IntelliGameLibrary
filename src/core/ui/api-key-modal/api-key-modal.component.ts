@@ -31,44 +31,80 @@ import { AiProviderType, AI_PROVIDERS } from '../../ai/ai-provider.interface';
               </select>
             </div>
 
-            <p class="text-slate-600 mb-4">
+            <p class="text-slate-600 mb-4 text-sm">
               为了使用 AI 功能，您需要提供所选服务商的 API 密钥。应用会将密钥安全地存储在您的浏览器本地。
             </p>
-             <p class="text-slate-500 mb-5 text-sm">
-              您可以从 <a [href]="selectedProviderInfo()?.getApiKeyUrl" target="_blank" class="text-cyan-600 hover:underline font-medium">{{ selectedProviderInfo()?.name }} 官方网站</a> 获取您的 API 密钥。
-            </p>
-            <div class="flex items-center space-x-3">
-                <input 
-                  type="password"
-                  #apiKeyInput
-                  [value]="apiKey()"
-                  (input)="apiKey.set(apiKeyInput.value)"
-                  [placeholder]="'输入 ' + selectedProviderInfo()?.name + ' API 密钥'"
+
+            @if (selectedProviderInfo()?.id !== 'custom') {
+              <p class="text-slate-500 mb-5 text-sm">
+                您可以从 <a [href]="selectedProviderInfo()?.getApiKeyUrl" target="_blank" class="text-cyan-600 hover:underline font-medium">{{ selectedProviderInfo()?.name }} 官方网站</a> 获取您的 API 密钥。
+              </p>
+            }
+
+            @if (selectedProvider() === 'custom') {
+              <div class="mb-4">
+                <label for="custom-endpoint" class="block text-sm font-medium text-slate-700 mb-2">自定义 API 端点:</label>
+                <input
+                  id="custom-endpoint"
+                  type="text"
+                  #endpointInput
+                  [value]="customEndpoint()"
+                  (input)="customEndpoint.set(endpointInput.value)"
+                  placeholder="例如: http://localhost:1234/v1/chat/completions"
                   class="w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
                 />
-                <button 
+              </div>
+            }
+
+            <div>
+              <label for="api-key-input" class="block text-sm font-medium text-slate-700 mb-2">API 密钥:</label>
+              <div class="flex items-center space-x-3">
+                  <input 
+                    id="api-key-input"
+                    type="password"
+                    #apiKeyInput
+                    [value]="apiKey()"
+                    (input)="apiKey.set(apiKeyInput.value)"
+                    [placeholder]="'输入 ' + selectedProviderInfo()?.name + ' API 密钥'"
+                    class="w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
+                  />
+                  @if (hasStoredKey()) {
+                    <button 
+                      (click)="deleteApiKey()"
+                      class="px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-md hover:bg-red-200 transition-colors">
+                      删除
+                    </button>
+                  }
+              </div>
+            </div>
+
+            <div class="mt-6 text-right">
+              <button 
                   (click)="saveApiKey()"
                   class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed"
-                  [disabled]="!apiKey()">
+                  [disabled]="!apiKey() || (selectedProvider() === 'custom' && !customEndpoint())">
                   保存并激活
-                </button>
+              </button>
             </div>
             
             <div class="text-sm mt-3 h-5">
               @if (aiService.isConfigured() && aiService.activeProviderType() === selectedProvider()) {
-                  <p class="text-emerald-600">
+                  <p class="text-emerald-600 font-medium">
                     {{ selectedProviderInfo()?.name }} 服务已激活。
+                  </p>
+              } @else if (hasStoredKey() && apiKey() === getStoredKey()) {
+                  <p class="text-amber-600 font-medium">
+                    {{ selectedProviderInfo()?.name }} 未激活，点击“保存并激活”以切换。
                   </p>
               } @else if (apiKey()) {
                  <p class="text-slate-500">密钥已输入，点击保存以激活。</p>
               } @else {
-                  <p class="text-amber-600">
+                  <p class="text-amber-600 font-medium">
                     {{ selectedProviderInfo()?.name }} 需要 API 密钥才能使用。
                   </p>
               }
             </div>
         </div>
-
       </div>
     </div>
   `,
@@ -80,17 +116,33 @@ export class ApiKeyModalComponent {
 
   providers = AI_PROVIDERS;
   selectedProvider = signal<AiProviderType>(this.aiService.activeProviderType());
-  apiKey = signal(this.aiService.getApiKey(this.selectedProvider()));
+  apiKey = signal('');
+  customEndpoint = signal('');
+
+  hasStoredKey = computed(() => !!this.aiService.getApiKey(this.selectedProvider()));
+  getStoredKey = () => this.aiService.getApiKey(this.selectedProvider());
+
+  constructor() {
+    this.onProviderChange(this.aiService.activeProviderType());
+  }
 
   selectedProviderInfo = computed(() => this.providers.find(p => p.id === this.selectedProvider()));
   
   onProviderChange(providerId: AiProviderType) {
     this.selectedProvider.set(providerId);
     this.apiKey.set(this.aiService.getApiKey(providerId));
+    if (providerId === 'custom') {
+      this.customEndpoint.set(this.aiService.getCustomEndpoint('custom'));
+    }
   }
 
   async saveApiKey() {
-    await this.aiService.setApiKeyAndSwitch(this.selectedProvider(), this.apiKey());
+    await this.aiService.setApiKeyAndSwitch(this.selectedProvider(), this.apiKey(), this.customEndpoint());
     this.close.emit();
+  }
+
+  async deleteApiKey() {
+    await this.aiService.deleteApiKey(this.selectedProvider());
+    this.apiKey.set('');
   }
 }
