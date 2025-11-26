@@ -87,7 +87,7 @@ import { CommonModule } from '@angular/common';
               }
 
               <div class="mt-8 border-t border-slate-200 pt-8">
-                <h3 class="text-2xl font-bold text-cyan-700 mb-4">AI 设计分析</h3>
+                <h3 class="text-2xl font-bold text-cyan-700 mb-4">设计分析</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm">
                     @for(analysis of aiAnalysisItems(); track analysis.title) {
                       <div class="bg-white p-4 rounded-lg border border-slate-200">

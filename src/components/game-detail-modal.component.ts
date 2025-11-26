@@ -77,7 +77,7 @@ import { Game } from '../models/game.model';
               </div>
 
               <div class="mt-6 border-t border-gray-700 pt-6">
-                <h3 class="text-2xl font-bold text-indigo-400 mb-4">AI 设计分析</h3>
+                <h3 class="text-2xl font-bold text-indigo-400 mb-4">设计分析</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div class="bg-gray-900/70 p-4 rounded-lg border border-gray-700">
                         <h5 class="font-semibold text-gray-100 mb-1">核心乐趣</h5>
