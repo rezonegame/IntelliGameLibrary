@@ -60,7 +60,11 @@ export class FeedbackService {
   }
 
   logAnalyticsEvent(eventType: string, eventData: string): Observable<any> {
-    const payload = { eventType, eventData };
+    const payload = { 
+      timestamp: new Date().toISOString(),
+      eventType, 
+      eventData 
+    };
     return this.http.post(`${this.webhookUrl}?action=logAnalytics`, JSON.stringify(payload), { headers: this.postHeaders });
   }
 }
