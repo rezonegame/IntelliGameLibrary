@@ -3,6 +3,41 @@ import { createRandomPlaceholderSVG } from './placeholder';
 
 export const GAMES_B_F: Game[] = [
   {
+    "id": 97,
+    "name": "乞丐与邻居",
+    "originalName": "Beggar-My-Neighbour",
+    "image": createRandomPlaceholderSVG(),
+    "description": "一款简单的儿童纸牌游戏，玩家通过翻牌来赢取对方的牌，运气成分高。",
+    "players": { "min": 2, "max": 2 },
+    "playTime": { "min": 5, "max": 15 },
+    "complexity": "Very Low",
+    "category": "卡牌游戏",
+    "mechanics": ["运气"],
+    "componentsDescription": "一副标准的52张扑克牌。",
+    "historicalStory": "这是一个非常古老的英国纸牌游戏，规则简单，完全依赖运气，因此非常适合儿童。它的名字生动地描绘了游戏的本质：一个玩家的财富（牌）会迅速转移到另一个玩家手中，就像邻居之间的贫富变化一样。",
+    "modificationSuggestion": {
+      "themeSwaps": [
+        "巨龙囤宝: 玩家是两条巨龙，牌是金币，通过展示宝藏来赢取对方的金币。",
+        "星际舰队遭遇战: 玩家是两支舰队，牌是战舰，通过遭遇战来俘获对方的战舰。"
+      ],
+      "mechanicFusions": [
+        "乞丐与邻居 + 特殊能力: J, Q, K, A 除了需要对方出牌外，还附带特殊效果。例如，打出Q可以“偷看”对方牌顶的三张牌。"
+      ]
+    },
+    "rules": {
+      "objective": "赢得对手所有的牌。",
+      "setup": "将一副牌平均发给两位玩家，牌面向下。",
+      "gameplay": "玩家轮流从自己的牌堆顶翻一张牌。如果翻出的是数字牌，则轮到下一位玩家。如果翻出的是A, K, Q或J，则对手必须相应地出4, 3, 2或1张牌。如果对手出的牌中没有A, K, Q, J，则出牌方赢得这一轮的所有牌。如果对手在此期间也出A, K, Q, J，则轮到另一方出牌，如此往复。"
+    },
+    "aiAnalysis": {
+      "coreFun": "纯粹的运气带来的不可预测性和戏剧性。",
+      "keyDecisions": "无。这是一个纯运气的游戏。",
+      "potentialFlaws": "毫无策略深度，游戏时间可能很长。",
+      "designImpact": "一个展示了纯随机性如何创造简单乐趣的例子。它能教会儿童基础的轮流概念和数字识别。"
+    },
+    "variants": []
+  },
+  {
     "id": 54,
     "name": "障碍棋",
     "originalName": "Barricade / Malefiz",
@@ -38,6 +73,42 @@ export const GAMES_B_F: Game[] = [
       "designImpact": "在传统竞赛游戏中加入了“阻挡”机制，增加了玩家互动。它能锻炼玩家的战术思维和在变化的环境中调整策略的能力。"
     },
     "variants": []
+  },
+  {
+    "id": 98,
+    "name": "贝齐克",
+    "originalName": "Bézique",
+    "image": createRandomPlaceholderSVG(),
+    "description": "一款经典的双人吃墩卡牌游戏，通过赢得包含高分牌的墩和组成特定牌组（称为“Bézique”）来得分。",
+    "players": { "min": 2, "max": 2 },
+    "playTime": { "min": 30, "max": 45 },
+    "complexity": "Medium",
+    "category": "卡牌游戏",
+    "mechanics": ["吃墩", "组合收集", "手牌管理"],
+    "componentsDescription": "两副32张的牌库（7到A），共64张牌。",
+    "historicalStory": "贝齐克在19世纪的法国非常流行，据说拿破仑也是其爱好者。温斯顿·丘吉尔也是一位著名的贝齐克玩家，他认为这款游戏能够锻炼人的记忆力和决策能力。它被认为是匹诺克的前身。",
+    "modificationSuggestion": {
+      "themeSwaps": [
+        "宫廷阴谋: 玩家是宫廷贵族，通过赢得辩论（吃墩）和建立政治联姻（组合）来获得影响力。",
+        "炼金术实验: 玩家是炼金术士，通过混合材料（吃墩）和宣告配方（组合）来得分。"
+      ],
+      "mechanicFusions": [
+        "贝齐克 + 秘密目标: 每个玩家有一个秘密的组合目标，完成它会获得额外分数。",
+        "贝齐克 + 动态王牌: 每当有玩家宣告一个组合时，王牌花色可能会根据组合的类型而改变。"
+      ]
+    },
+    "rules": {
+      "objective": "通过吃墩和宣告组合来成为第一个达到目标分数的玩家。",
+      "setup": "每位玩家发8张牌，翻开一张作为王牌，其余作为摸牌堆。",
+      "gameplay": "玩家轮流出牌吃墩，在摸牌堆被摸完前无需跟牌。赢得一墩的玩家可以摸一张牌，并有机会宣告一个得分组合（例如“贝齐克”：黑桃Q和方块J）。摸完牌后，游戏进入严格的跟牌阶段。"
+    },
+    "aiAnalysis": {
+      "coreFun": "在吃墩和组合得分之间找到平衡的策略乐趣。",
+      "keyDecisions": "是赢得一个包含高分牌的墩，还是保留手牌以组成一个高分组合。",
+      "potentialFlaws": "计分系统对新手来说可能有些复杂。",
+      "designImpact": "一个经典的双重计分系统游戏，迫使玩家不断权衡短期和长期利益。它能锻炼玩家的策略规划、记忆力和风险评估能力。"
+    },
+    "variants": ["匹诺克 (Pinochle)"]
   },
   {
     "id": 7,
@@ -613,7 +684,7 @@ export const GAMES_B_F: Game[] = [
     "category": "技巧游戏",
     "mechanics": ["弹射", "技巧"],
     "componentsDescription": "一个圆形的木制棋盘，中央有一个凹陷的小孔，周围有三圈得分区和一些起阻挡作用的木钉。",
-    "historicalStory": "加拿大棋（Crokinole）于1876年在加拿大安大略省发明，是加拿大最具代表性的传统桌面游戏。它的名字可能来源于法语“croquignole”，意为“小饼干”或“弹指”。每年，世界加拿大棋锦标赛都会在安大略省的塔维斯托克举行，吸引了来自世界各地的爱好者。",
+    "historicalStory": "加拿大棋（Crokinole）于1876年在加拿大安大略省发明，是加拿大最具代表性的传统桌面游戏。它的名字可能来源于法语“croquignole”，意为“小饼干”或“弹指”。每年，世界加拿大棋锦標赛都会在安大略省的塔维斯托克举行，吸引了来自世界各地的爱好者。",
     "modificationSuggestion": {
       "themeSwaps": [
         "星际停泊: 棋盘是空间站，玩家试图将自己的飞船停泊在最高价值的“停泊港”（中心孔）。",

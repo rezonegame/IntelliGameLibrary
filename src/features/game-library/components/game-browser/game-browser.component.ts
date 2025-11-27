@@ -44,7 +44,16 @@ export class GameBrowserComponent {
       searchTimeout = setTimeout(() => {
         untracked(() => this.isSearching.set(false));
       }, 300);
-    })
+    });
+
+    // Effect to handle opening the detail modal from an external request
+    effect(() => {
+      const gameToOpen = this.gameService.openGameDetails();
+      if (gameToOpen) {
+        this.selectGame(gameToOpen);
+        this.gameService.openGameDetails.set(null); // Reset the signal after handling
+      }
+    });
   }
 
   filteredGames = computed(() => {

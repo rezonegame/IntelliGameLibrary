@@ -11,6 +11,9 @@ export class GameService {
   private toastService = inject(ToastService);
   games = signal<Game[]>(INITIAL_GAMES);
 
+  // Signal to request opening the detail modal for a specific game
+  openGameDetails = signal<Game | null>(null);
+
   addGame(game: Game) {
     if (this.games().some(g => g.name.toLowerCase() === game.name.toLowerCase())) {
         this.toastService.show(`游戏 "${game.name}" 已存在于典藏中`, 'info');

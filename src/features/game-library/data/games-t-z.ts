@@ -217,7 +217,6 @@ export const GAMES_T_Z: Game[] = [
       "setup": "2名军官在堡垒内，24名士兵在堡垒外。",
       "gameplay": "士兵只能向前或横向移动到相邻的空点。军官可以向任何方向移动，并可以通过跳过士兵来吃掉他们，可以连跳。士兵不能吃子。"
     },
-    // FIX: Completed the `aiAnalysis` object with all required properties.
     "aiAnalysis": {
       "coreFun": "体验以少胜多的快感（军官方），或通过团队合作和人海战术实现目标（士兵方）的乐趣。",
       "keyDecisions": "士兵方如何协调推进以形成包围网；军官方如何引诱士兵进入陷阱并逐个击破。",

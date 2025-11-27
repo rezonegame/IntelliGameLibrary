@@ -116,15 +116,15 @@ const USER_NAME_KEY = 'intell-game-user-name';
             </button>
           } @else if (currentView() === 'form') {
             <button (click)="postMessage()"
-                    class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed min-w-[120px]"
+                    class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed min-w-[120px] flex justify-center items-center"
                     [disabled]="isFormInvalid() || isPosting()">
-              @if (isPosting()) { <div class="h-5 w-5 mx-auto"><app-loader></app-loader></div> } @else { <span>确认发布</span> }
+              @if (isPosting()) { <app-loader></app-loader> } @else { <span>确认发布</span> }
             </button>
           } @else if (currentView() === 'reply') {
              <button (click)="postReply()"
-                    class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed min-w-[120px]"
+                    class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed min-w-[120px] flex justify-center items-center"
                     [disabled]="!newReply.reply.trim() || isPosting()">
-              @if (isPosting()) { <div class="h-5 w-5 mx-auto"><app-loader></app-loader></div> } @else { <span>确认回复</span> }
+              @if (isPosting()) { <app-loader></app-loader> } @else { <span>确认回复</span> }
             </button>
           }
         </div>

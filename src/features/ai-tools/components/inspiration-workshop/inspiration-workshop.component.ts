@@ -54,14 +54,14 @@ import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
                   <h3 class="text-xl font-bold mb-2 text-slate-700">主题改造器</h3>
                   <p class="text-slate-500 mb-6">选择一款经典游戏，并为它赋予一个全新的主题皮肤。</p>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <select [(ngModel)]="remodelGame" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                      <select [ngModel]="remodelGame()" (ngModelChange)="remodelGame.set($event)" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
                           @for(game of gameService.games(); track game.id) {
                               <option [value]="game.name">{{ game.name }}</option>
                           }
                       </select>
-                      <input type="text" [(ngModel)]="remodelTheme" placeholder="输入新主题，如：赛博朋克、深海探险" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                      <input type="text" [ngModel]="remodelTheme()" (ngModelChange)="remodelTheme.set($event)" placeholder="输入新主题，如：赛博朋克、深海探险" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
                   </div>
-                  <button (click)="generateRemodel()" [disabled]="isLoading() || !remodelGame || !remodelTheme" class="w-full px-6 py-3 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed flex justify-center items-center text-base">
+                  <button (click)="generateRemodel()" [disabled]="isLoading() || !remodelGame() || !remodelTheme()" class="w-full px-6 py-3 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed flex justify-center items-center text-base">
                      @if (isLoading()) { <app-loader></app-loader> } @else { <span>开始改造</span> }
                   </button>
               </div>
@@ -71,14 +71,14 @@ import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
                   <h3 class="text-xl font-bold mb-2 text-slate-700">“假如...”模拟器</h3>
                   <p class="text-slate-500 mb-6">为一款游戏提出一个规则变更，看看 AI 如何分析其对游戏性的深远影响。</p>
                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <select [(ngModel)]="whatIfGame" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                      <select [ngModel]="whatIfGame()" (ngModelChange)="whatIfGame.set($event)" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
                           @for(game of gameService.games(); track game.id) {
                               <option [value]="game.name">{{ game.name }}</option>
                           }
                       </select>
-                      <input type="text" [(ngModel)]="whatIfRule" placeholder="输入规则变更，如：国际象棋的兵可以后退" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                      <input type="text" [ngModel]="whatIfRule()" (ngModelChange)="whatIfRule.set($event)" placeholder="输入规则变更，如：国际象棋的兵可以后退" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
                   </div>
-                  <button (click)="generateSimulation()" [disabled]="isLoading() || !whatIfGame || !whatIfRule" class="w-full px-6 py-3 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed flex justify-center items-center text-base">
+                  <button (click)="generateSimulation()" [disabled]="isLoading() || !whatIfGame() || !whatIfRule()" class="w-full px-6 py-3 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed flex justify-center items-center text-base">
                      @if (isLoading()) { <app-loader></app-loader> } @else { <span>分析影响</span> }
                   </button>
               </div>
@@ -171,12 +171,12 @@ export class InspirationWorkshopComponent {
   selectedMechanics = signal<string[]>([]);
   
   // Theme Remodeler state
-  remodelGame = '国际象棋';
-  remodelTheme = '';
+  remodelGame = signal('国际象棋');
+  remodelTheme = signal('');
 
   // "What If" Simulator state
-  whatIfGame = '国际跳棋';
-  whatIfRule = '';
+  whatIfGame = signal('国际跳棋');
+  whatIfRule = signal('');
 
   constructor() {
     effect(() => {
@@ -210,10 +210,10 @@ export class InspirationWorkshopComponent {
   }
 
   generateRemodel() {
-    this.runGeneration(() => this.aiService.remodelTheme(this.remodelGame, this.remodelTheme));
+    this.runGeneration(() => this.aiService.remodelTheme(this.remodelGame(), this.remodelTheme()));
   }
 
   generateSimulation() {
-    this.runGeneration(() => this.aiService.simulateRuleChange(this.whatIfGame, this.whatIfRule));
+    this.runGeneration(() => this.aiService.simulateRuleChange(this.whatIfGame(), this.whatIfRule()));
   }
 }

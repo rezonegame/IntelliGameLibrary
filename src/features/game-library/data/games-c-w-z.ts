@@ -40,6 +40,41 @@ export const GAMES_C_W_Z: Game[] = [
     "variants": ["皇家赌场 (Royal Casino)"]
   },
   {
+    "id": 99,
+    "name": "疯八",
+    "originalName": "Crazy Eights",
+    "image": createRandomPlaceholderSVG(),
+    "description": "一款著名的“倒牌”类游戏，玩家的目标是成为第一个出完所有手牌的人。数字8是万能牌。",
+    "players": { "min": 2, "max": 7 },
+    "playTime": { "min": 10, "max": 20 },
+    "complexity": "Very Low",
+    "category": "卡牌游戏",
+    "mechanics": ["手牌管理", "万能牌"],
+    "componentsDescription": "一副或两副标准的52张扑克牌。",
+    "historicalStory": "“疯八”是UNO的前身，也是20世纪最流行的纸牌游戏之一。它的名字来源于美国军队的俚语，用来指代精神不稳定的士兵（Section 8）。游戏简单、快节奏的特性使其在全球范围内广受欢迎。",
+    "modificationSuggestion": {
+      "themeSwaps": [
+        "魔法决斗: 玩家是魔法师，出牌是施法。8是“变色龙”法术，可以改变下一个法术的元素属性。",
+        "间谍游戏: 玩家是间谍，出牌是传递情报。8是“万能钥匙”，可以匹配任何情报。"
+      ],
+      "mechanicFusions": [
+        "疯八 + 特殊能力: 除了8是万能牌，其他一些牌也有特殊效果，例如：出Q让下一位玩家跳过回合，出A让出牌顺序反转，出2让下一位玩家摸两张牌（UNO的经典规则）。"
+      ]
+    },
+    "rules": {
+      "objective": "成为第一个出完所有手牌的玩家。",
+      "setup": "每位玩家发5张牌（或更多）。将剩余的牌作为摸牌堆，并翻开第一张作为弃牌堆。",
+      "gameplay": "玩家轮流出牌，打出的牌必须与弃牌堆顶的牌在点数或花色上匹配。如果玩家无法出牌，则必须摸牌。数字8是万能牌，可以随时打出，并指定下一张牌的花色。"
+    },
+    "aiAnalysis": {
+      "coreFun": "快速、简单的出牌乐趣，以及打出万能牌改变局势的快感。",
+      "keyDecisions": "何时使用宝贵的8，以及如何管理手牌以应对不同的花色要求。",
+      "potentialFlaws": "运气成分很大。",
+      "designImpact": "“匹配或摸牌”机制的典范，简单易学，互动性强。它能教会玩家基础的手牌管理和颜色/数字匹配。"
+    },
+    "variants": ["UNO"]
+  },
+  {
     "id": 95,
     "name": "惠斯特",
     "originalName": "Whist",
