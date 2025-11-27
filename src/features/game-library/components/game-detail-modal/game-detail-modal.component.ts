@@ -167,9 +167,9 @@ export class GameDetailModalComponent {
     const game = this.game();
     if (!game) return;
 
-    const shareUrl = `https://txtbg.cn/#game=${game.id}`;
+    const shareUrl = `https://txtbg.cn`;
     const descriptionSnippet = game.description.length > 50 ? game.description.substring(0, 50) + '...' : game.description;
-    const shareText = `我发现一款很棒的游戏：《${game.name}》。\n${descriptionSnippet}\n快来看看吧！\n${shareUrl}`;
+    const shareText = `我发现一款很棒的游戏：《${game.name}》。\n${descriptionSnippet}\n快来“智游图鉴”看看吧！\n${shareUrl}`;
 
     navigator.clipboard.writeText(shareText).then(() => {
       this.toastService.show('分享内容已复制到剪贴板！', 'success');
