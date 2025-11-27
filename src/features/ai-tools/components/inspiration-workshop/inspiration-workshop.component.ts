@@ -4,6 +4,7 @@ import { GameService } from '../../../game-library/services/game.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
+import { UiService } from '../../../../core/services/ui.service';
 
 
 @Component({
@@ -157,6 +158,7 @@ import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
 export class InspirationWorkshopComponent {
   aiService = inject(AiService);
   gameService = inject(GameService);
+  uiService = inject(UiService);
 
   tabs = ['机制融合', '主题改造', '“假如”模拟器'];
   activeTab = signal(this.tabs[0]);
@@ -180,9 +182,25 @@ export class InspirationWorkshopComponent {
 
   constructor() {
     effect(() => {
-      // This effect runs whenever activeTab() changes, clearing the previous result.
+      // Clear previous result when activeTab changes.
       this.activeTab(); 
       this.aiResult.set(null);
+    });
+
+    // Effect to handle incoming context from other components
+    effect(() => {
+      const context = this.uiService.inspirationContext();
+      if (context) {
+        if (context.type === 'remodel') {
+          this.activeTab.set('主题改造');
+          this.remodelGame.set(context.game.name);
+          this.remodelTheme.set(''); // Clear theme for user input
+        } else if (context.type === 'simulate') {
+          this.activeTab.set('“假如”模拟器');
+          this.whatIfGame.set(context.game.name);
+          this.whatIfRule.set(''); // Clear rule for user input
+        }
+      }
     });
   }
 

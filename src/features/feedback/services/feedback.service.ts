@@ -61,6 +61,6 @@ export class FeedbackService {
 
   logAnalyticsEvent(eventType: string, eventData: string): Observable<any> {
     const payload = { eventType, eventData };
-    return this.http.post(`${this.webhookUrl}?action=logEvent`, JSON.stringify(payload), { headers: this.postHeaders });
+    return this.http.post(`${this.webhookUrl}?action=logAnalytics`, JSON.stringify(payload), { headers: this.postHeaders });
   }
 }

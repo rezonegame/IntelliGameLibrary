@@ -5,6 +5,7 @@ import { GeminiProvider } from './providers/gemini.provider';
 import { OpenAIProvider } from './providers/openai.provider';
 import { DeepSeekProvider } from './providers/deepseek.provider';
 import { ClaudeProvider } from './providers/claude.provider';
+import { UiService } from '../services/ui.service';
 
 const API_KEYS_STORAGE_ITEM = 'ai-api-keys';
 const CUSTOM_ENDPOINTS_STORAGE_ITEM = 'ai-custom-endpoints';
@@ -13,6 +14,7 @@ const ACTIVE_PROVIDER_STORAGE_ITEM = 'ai-active-provider';
 @Injectable({ providedIn: 'root' })
 export class AiService {
   private toastService = inject(ToastService);
+  private uiService = inject(UiService);
   private geminiProvider = inject(GeminiProvider);
   private openAiProvider = inject(OpenAIProvider);
   private deepSeekProvider = inject(DeepSeekProvider);
@@ -25,6 +27,17 @@ export class AiService {
 
   constructor() {
     this.loadStateFromStorage();
+
+    // Smart provider switching: if the last active provider is not configured,
+    // try to find any other configured provider and switch to it.
+    const activeType = this.activeProviderType();
+    if (!this.getApiKey(activeType)) {
+        const firstConfiguredProvider = AI_PROVIDERS.find(p => this.getApiKey(p.id));
+        if (firstConfiguredProvider) {
+            this.activeProviderType.set(firstConfiguredProvider.id);
+        }
+    }
+
     this.switchProvider(this.activeProviderType());
   }
 
@@ -147,6 +160,7 @@ export class AiService {
     if (!provider) {
       const errorMessage = `当前 AI 服务 (${this.getProviderName(this.activeProviderType())}) 未配置`;
       this.toastService.show(errorMessage, 'error');
+      this.uiService.openApiKeyModal();
       throw new Error(errorMessage);
     }
     return action(provider);

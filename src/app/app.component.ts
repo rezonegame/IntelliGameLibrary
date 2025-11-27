@@ -11,8 +11,7 @@ import { AnalyticsService } from '../core/services/analytics.service';
 import { GameService } from '../features/game-library/services/game.service';
 import { Game } from '../core/models/game.model';
 import { TipModalComponent } from '../core/ui/tip-modal/tip-modal.component';
-
-export type AppView = 'browser' | 'identifier' | 'workshop';
+import { UiService } from '../core/services/ui.service';
 
 @Component({
   selector: 'app-root',
@@ -45,9 +44,6 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
   <div [class]="'fixed inset-y-0 left-0 w-64 z-40 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex-shrink-0 ' + (isMobileMenuOpen() ? 'translate-x-0' : '-translate-x-full')">
     <app-sidebar 
       class="w-full h-full"
-      [currentView]="currentView()" 
-      (setView)="setView($event)"
-      (openApiKeyModal)="openApiKeyModal()"
       (closeMenu)="isMobileMenuOpen.set(false)">
     </app-sidebar>
   </div>
@@ -59,7 +55,7 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
 
   <!-- Main Content -->
   <main class="flex-1 overflow-y-auto">
-    @switch (currentView()) {
+    @switch (uiService.currentView()) {
       @case ('browser') { <app-game-browser></app-game-browser> }
       @case ('identifier') { <app-ai-identifier></app-ai-identifier> }
       @case ('workshop') { <app-inspiration-workshop></app-inspiration-workshop> }
@@ -111,6 +107,8 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
       <div>
         <h4 class="font-semibold text-slate-800 mb-2">更新日志</h4>
         <ul class="list-disc list-inside space-y-1.5 pl-1">
+          <li><b>v2.4:</b> AI 服务智能切换优化，提升启动体验。</li>
+          <li><b>v2.3:</b> 全面 UI/UX 体验升级（今日聚焦、情境化AI工具等）。</li>
           <li><b>v2.2:</b> 新增5款经典公共版权卡牌游戏。</li>
           <li><b>v2.1.1:</b> 新增每日tips，告诉你桌游背后的故事。</li>
           <li><b>v2.1:</b> 新增赌场、惠斯特、争上游三款游戏。</li>
@@ -123,8 +121,8 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
   </div>
 }
 
-@if (isApiKeyModalOpen()) {
-  <app-api-key-modal (close)="closeApiKeyModal()"></app-api-key-modal>
+@if (uiService.isApiKeyModalOpen()) {
+  <app-api-key-modal (close)="uiService.closeApiKeyModal()"></app-api-key-modal>
 }
 @if (isFeedbackModalOpen()) {
   <app-message-board-modal (close)="closeFeedbackModal()"></app-message-board-modal>
@@ -156,11 +154,10 @@ export type AppView = 'browser' | 'identifier' | 'workshop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
+  uiService = inject(UiService);
   private analyticsService = inject(AnalyticsService);
   private gameService = inject(GameService);
 
-  currentView = signal<AppView>('browser');
-  isApiKeyModalOpen = signal(false);
   isMobileMenuOpen = signal(false);
   isFeedbackModalOpen = signal(false);
   isHelpVisible = signal(false);
@@ -171,7 +168,7 @@ export class AppComponent implements OnInit {
   isTipModalOpen = signal(false);
 
   constructor() {
-    this.analyticsService.logEvent('pageView', 'browser'); // Log initial view
+    this.analyticsService.logEvent('pageView', this.uiService.currentView()); // Log initial view
   }
 
   ngOnInit() {
@@ -188,24 +185,16 @@ export class AppComponent implements OnInit {
       if (gameId) {
         const game = this.gameService.games().find(g => g.id === +gameId);
         if (game) {
-          // First, ensure we are on the browser view. This will queue the component creation.
-          this.currentView.set('browser');
-
-          // Then, wait for the next render which will create the GameBrowserComponent.
+          this.uiService.setView('browser');
           afterNextRender(() => {
-            // NOW the GameBrowserComponent exists and its effects are registered.
-            // Set the signal to open the modal.
             this.gameService.openGameDetails.set(game);
           });
-          
-          // Clean up the URL to avoid the modal popping up on every refresh
           window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
-
-          return true; // Indicate that a shared link was handled
+          return true;
         }
       }
     }
-    return false; // No shared link was handled
+    return false;
   }
 
   showRandomTip() {
@@ -230,28 +219,10 @@ export class AppComponent implements OnInit {
   viewTipGameDetails() {
     const game = this.tipGame();
     if (game) {
-      this.currentView.set('browser'); // Ensure we are on the browser view
-      // This will be handled by the game browser component now, which opens the detail modal
+      this.uiService.setView('browser');
       this.gameService.openGameDetails.set(game);
     }
     this.isTipModalOpen.set(false);
-  }
-
-  setView(view: AppView) {
-    if (this.currentView() !== view) {
-      this.currentView.set(view);
-      this.analyticsService.logEvent('pageView', view);
-    }
-    this.isMobileMenuOpen.set(false);
-  }
-
-  openApiKeyModal() {
-    this.isApiKeyModalOpen.set(true);
-    this.isMobileMenuOpen.set(false);
-  }
-
-  closeApiKeyModal() {
-    this.isApiKeyModalOpen.set(false);
   }
 
   openFeedbackModal() {
