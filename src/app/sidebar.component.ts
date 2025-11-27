@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, output } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { AiService } from '../core/ai/ai.service';
 import { UiService } from '../core/services/ui.service';
+import { VisitorService } from '../core/services/visitor.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -52,6 +53,11 @@ import { UiService } from '../core/services/ui.service';
               配置 AI 服务
           </button>
           <div class="text-center text-xs text-slate-400 pt-2">
+              @if (visitorService.visitorCount(); as count) {
+                <p class="mb-1">你是今日的第 <span class="font-bold text-cyan-600">{{ count }}</span> 位访客。</p>
+              } @else {
+                  <p class="mb-1 h-4 animate-pulse"><span class="bg-slate-200 rounded-md inline-block w-32 h-3"></span></p> 
+              }
               <p>由 <span style="font-weight:bolder;">来福的鱼塘</span> 驱动</p>
               <p>（欢迎加我的公众号聊天）</p>
           </div>
@@ -63,5 +69,10 @@ import { UiService } from '../core/services/ui.service';
 export class SidebarComponent {
   aiService = inject(AiService);
   uiService = inject(UiService);
+  visitorService = inject(VisitorService);
   closeMenu = output();
+
+  constructor() {
+    this.visitorService.fetchAndIncrementCount();
+  }
 }

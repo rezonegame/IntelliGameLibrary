@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
 import { UiService } from '../../../../core/services/ui.service';
+import { FeedbackService } from '../../../feedback/services/feedback.service';
 
 
 @Component({
@@ -159,6 +160,7 @@ export class InspirationWorkshopComponent {
   aiService = inject(AiService);
   gameService = inject(GameService);
   uiService = inject(UiService);
+  feedbackService = inject(FeedbackService);
 
   tabs = ['机制融合', '主题改造', '“假如”模拟器'];
   activeTab = signal(this.tabs[0]);
@@ -210,12 +212,19 @@ export class InspirationWorkshopComponent {
     );
   }
 
-  private async runGeneration(generator: () => Promise<any>) {
+  private async runGeneration(generator: () => Promise<any>, input: any) {
       this.isLoading.set(true);
       this.aiResult.set(null);
       try {
           const res = await generator();
           this.aiResult.set(res);
+          // Silently log the successful generation
+          this.feedbackService.logInspirationIdea({
+            timestamp: new Date().toISOString(),
+            type: this.activeTab(),
+            input: input,
+            output: res
+          }).subscribe(); // Fire and forget
       } catch (error) {
           console.error("生成失败", error);
       } finally {
@@ -224,14 +233,17 @@ export class InspirationWorkshopComponent {
   }
 
   generateFusion() {
-    this.runGeneration(() => this.aiService.fuseMechanics(this.selectedMechanics()));
+    const input = { mechanics: this.selectedMechanics() };
+    this.runGeneration(() => this.aiService.fuseMechanics(this.selectedMechanics()), input);
   }
 
   generateRemodel() {
-    this.runGeneration(() => this.aiService.remodelTheme(this.remodelGame(), this.remodelTheme()));
+    const input = { game: this.remodelGame(), theme: this.remodelTheme() };
+    this.runGeneration(() => this.aiService.remodelTheme(this.remodelGame(), this.remodelTheme()), input);
   }
 
   generateSimulation() {
-    this.runGeneration(() => this.aiService.simulateRuleChange(this.whatIfGame(), this.whatIfRule()));
+    const input = { game: this.whatIfGame(), rule: this.whatIfRule() };
+    this.runGeneration(() => this.aiService.simulateRuleChange(this.whatIfGame(), this.whatIfRule()), input);
   }
 }

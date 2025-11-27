@@ -14,6 +14,13 @@ export interface NewReply {
   reply: string;
 }
 
+export interface InspirationIdea {
+  timestamp: string;
+  type: string;
+  input: any;
+  output: any;
+}
+
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
   private http: HttpClient = inject(HttpClient);
@@ -66,5 +73,17 @@ export class FeedbackService {
       eventData 
     };
     return this.http.post(`${this.webhookUrl}?action=logAnalytics`, JSON.stringify(payload), { headers: this.postHeaders });
+  }
+
+  logInspirationIdea(idea: InspirationIdea): Observable<any> {
+    // This is a background task, so we just fire and forget.
+    // Errors will be logged to the console but won't bother the user.
+    return this.http.post(`${this.webhookUrl}?action=logIdea`, JSON.stringify(idea), { headers: this.postHeaders }).pipe(
+      catchError(error => {
+        console.error('Failed to log inspiration idea', error);
+        // Return an empty observable to complete the stream without propagating the error
+        return throwError(() => error);
+      })
+    );
   }
 }
