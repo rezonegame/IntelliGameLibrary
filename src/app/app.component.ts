@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, OnInit, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameBrowserComponent } from '../features/game-library/components/game-browser/game-browser.component';
 import { AiIdentifierComponent } from '../features/ai-tools/components/ai-identifier/ai-identifier.component';
@@ -66,7 +66,33 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.showRandomTip();
+    const sharedGameHandled = this.handleSharedGameLink();
+    if (!sharedGameHandled) {
+      this.showRandomTip();
+    }
+  }
+
+  private handleSharedGameLink(): boolean {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#game=')) {
+      const gameId = hash.substring('#game='.length);
+      if (gameId) {
+        const game = this.gameService.games().find(g => g.id === +gameId);
+        if (game) {
+          // Use afterNextRender to ensure the view is fully initialized before opening the modal.
+          afterNextRender(() => {
+            this.currentView.set('browser');
+            this.gameService.openGameDetails.set(game);
+          });
+
+          // Clean up the URL to avoid the modal popping up on every refresh
+          window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+
+          return true; // Indicate that a shared link was handled
+        }
+      }
+    }
+    return false; // No shared link was handled
   }
 
   showRandomTip() {
@@ -93,7 +119,6 @@ export class AppComponent implements OnInit {
     if (game) {
       this.currentView.set('browser'); // Ensure we are on the browser view
       // This will be handled by the game browser component now, which opens the detail modal
-      // FIX: 'openGameDetails' is a signal and should be updated using .set()
       this.gameService.openGameDetails.set(game);
     }
     this.isTipModalOpen.set(false);

@@ -1,6 +1,7 @@
-import { Component, input, output, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { Game } from '../../../../core/models/game.model';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-game-detail-modal',
@@ -21,16 +22,23 @@ import { CommonModule } from '@angular/common';
               </h2>
               <p class="text-slate-500 mt-1">{{ game()!.category }}</p>
             </div>
-            <button (click)="close.emit()" class="text-slate-400 hover:text-slate-600 transition-colors text-3xl font-light">&times;</button>
+            <button (click)="close.emit()" class="text-slate-400 hover:text-slate-600 transition-colors text-3xl font-light p-1 -m-1">&times;</button>
           </div>
 
           <div class="p-6 overflow-y-auto">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="md:col-span-1">
-                  <div class="relative group">
-                    <img [src]="game()!.image" [alt]="game()!.name" class="w-full rounded-lg shadow-md mb-6 border border-slate-200">
-                  </div>
-                  <div class="bg-white p-4 rounded-lg border border-slate-200">
+                  <img [src]="game()!.image" [alt]="game()!.name" class="w-full rounded-lg shadow-md border border-slate-200">
+                  
+                  <button (click)="shareGame()" 
+                          class="mt-4 w-full flex items-center justify-center px-4 py-3 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.002l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.366a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    </svg>
+                    <span>分享此游戏</span>
+                  </button>
+
+                  <div class="bg-white p-4 rounded-lg border border-slate-200 mt-6">
                     <h4 class="font-bold text-lg mb-3 text-slate-700 border-b border-slate-200 pb-2">核心信息</h4>
                     <div class="space-y-2 text-slate-600">
                       <p><strong>玩家人数:</strong> {{ game()!.players.min }} - {{ game()!.players.max }} 人</p>
@@ -142,6 +150,7 @@ import { CommonModule } from '@angular/common';
 export class GameDetailModalComponent {
   game = input<Game | null>();
   close = output();
+  private toastService = inject(ToastService);
 
   aiAnalysisItems = computed(() => {
     const analysis = this.game()?.aiAnalysis;
@@ -153,4 +162,20 @@ export class GameDetailModalComponent {
       { title: '设计影响', content: analysis.designImpact },
     ];
   });
+
+  shareGame() {
+    const game = this.game();
+    if (!game) return;
+
+    const shareUrl = `https://txtbg.cn/#game=${game.id}`;
+    const descriptionSnippet = game.description.length > 50 ? game.description.substring(0, 50) + '...' : game.description;
+    const shareText = `我发现一款很棒的游戏：《${game.name}》。\n${descriptionSnippet}\n快来看看吧！\n${shareUrl}`;
+
+    navigator.clipboard.writeText(shareText).then(() => {
+      this.toastService.show('分享内容已复制到剪贴板！', 'success');
+    }).catch(err => {
+      console.error('无法复制内容: ', err);
+      this.toastService.show('复制分享内容失败', 'error');
+    });
+  }
 }
