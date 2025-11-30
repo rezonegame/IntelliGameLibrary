@@ -107,6 +107,7 @@ import { UiService } from '../core/services/ui.service';
       <div>
         <h4 class="font-semibold text-slate-800 mb-2">更新日志</h4>
         <ul class="list-disc list-inside space-y-1.5 pl-1">
+          <li><b>v2.5:</b> 新增“今日聚焦”AI灵感推荐，一键探索游戏改造新玩法。</li>
           <li><b>v2.4:</b> AI 服务智能切换优化，提升启动体验。</li>
           <li><b>v2.3:</b> 全面 UI/UX 体验升级（今日聚焦、情境化AI工具等）。</li>
           <li><b>v2.2:</b> 新增5款经典公共版权卡牌游戏。</li>
