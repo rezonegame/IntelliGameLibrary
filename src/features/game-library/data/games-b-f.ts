@@ -77,6 +77,42 @@ export const GAMES_B_F: Game[] = [
     "variants": []
   },
   {
+    "id": 114,
+    "name": "百家乐",
+    "originalName": "Baccarat",
+    "image": createRandomPlaceholderSVG(),
+    "description": "一款纯粹的运气卡牌游戏，玩家下注于“闲家”或“庄家”，预测哪一方的手牌点数之和更接近9。",
+    "players": { "min": 2, "max": 14 },
+    "playTime": { "min": 5, "max": 10 },
+    "complexity": "Very Low",
+    "category": "博彩游戏",
+    "mechanics": ["下注", "运气"],
+    "tags": ["card_game", "gambling", "luck", "classic", "casino", "france"],
+    "componentsDescription": "多副标准的52张扑克牌（通常是6或8副）。",
+    "historicalStory": "百家乐起源于15世纪的意大利，由一位名叫 Felix Falguierein 的赌徒发明。它最初使用塔罗牌进行。后来传入法国，成为法国贵族的最爱。在詹姆斯·邦德系列电影中，百家乐是这位超级特工最钟爱的游戏，为其增添了优雅和神秘的色彩。",
+    "modificationSuggestion": {
+      "themeSwaps": [
+        "占卜师对决: 玩家下注于“命运”或“意志”，看谁的预言更接近未来。",
+        "巨龙吐息: 玩家下注于“红龙”或“金龙”，看谁的火焰（点数）更强大。"
+      ],
+      "mechanicFusions": [
+        "百家乐 + 边注: 除了下注庄家或闲家，玩家还可以下注一些小概率事件，例如“闲家首两张牌是对子”。"
+      ]
+    },
+    "rules": {
+      "objective": "正确预测“庄家”或“闲家”哪一方的手牌总点数更接近9，或预测双方平局。",
+      "setup": "玩家在指定的区域下注。",
+      "gameplay": "发牌员按固定规则向“闲家”和“庄家”两方发牌。牌的点数计算方式为：A为1点，2-9按牌面计点，10,J,Q,K为0点。总点数只取个位数。例如，一手牌是7和8，总和为15，则计为5点。根据双方前两张牌的点数，可能会按规则补第三张牌。最终点数更接近9的一方获胜。"
+    },
+    "aiAnalysis": {
+      "coreFun": "纯粹的运气带来的简单、快速的刺激感。",
+      "keyDecisions": "下注于庄家、闲家还是平局。这是一个纯概率选择。",
+      "potentialFlaws": "毫无策略深度，纯粹的赌博。",
+      "designImpact": "一个展示了极简规则和纯粹随机性如何创造出巨大吸引力的例子。它在游戏设计上的价值在于其简洁性和由此产生的快节奏悬念。"
+    },
+    "variants": ["迷你百家乐", "Chemin de Fer"]
+  },
+  {
     "id": 98,
     "name": "贝齐克",
     "originalName": "Bézique",
@@ -112,6 +148,43 @@ export const GAMES_B_F: Game[] = [
       "designImpact": "一个经典的双重计分系统游戏，迫使玩家不断权衡短期和长期利益。它能锻炼玩家的策略规划、记忆力和风险评估能力。"
     },
     "variants": ["匹诺克 (Pinochle)"]
+  },
+  {
+    "id": 113,
+    "name": "二十一点",
+    "originalName": "Blackjack / Twenty-One",
+    "image": createRandomPlaceholderSVG(),
+    "description": "世界上最流行的赌场游戏之一，玩家的目标是让手中的牌点数之和不超过21点，并比庄家大。",
+    "players": { "min": 2, "max": 7 },
+    "playTime": { "min": 5, "max": 15 },
+    "complexity": "Low",
+    "category": "卡牌游戏",
+    "mechanics": ["下注", "博运气", "手牌管理"],
+    "tags": ["card_game", "gambling", "push_your_luck", "classic", "casino"],
+    "componentsDescription": "一副或多副标准的52张扑克牌，以及用于下注的筹码。",
+    "historicalStory": "二十一点的前身是“Vingt-et-Un”（法语意为21），起源于18世纪的法国赌场。它在美国流行后，赌场为了吸引玩家，提供了一种特殊奖励：如果玩家拿到黑桃A和任意一张黑色的J，就能获得额外奖金。这种牌被称为“Blackjack”（黑杰克），游戏也因此得名。著名数学家爱德华·索普在20世纪60年代出版的《击败庄家》一书中，首次系统地提出了算牌策略，证明了玩家可以通过技巧击败赌场。",
+    "modificationSuggestion": {
+      "themeSwaps": [
+        "太空矿工：玩家是太空矿工，试图采集价值总和不超过21的“能量水晶”。",
+        "地牢探险：玩家是冒险者，试图在不惊醒巨龙（爆牌）的情况下，拿走价值最高的宝藏。"
+      ],
+      "mechanicFusions": [
+        "二十一点 + 玩家能力：每个玩家选择一个角色，拥有不同的特殊能力。例如，“赌徒”在“加倍下注”时有更高收益；“预言家”每三轮可以看一次牌堆顶的牌。",
+        "二十一点 + 任务卡：每轮开始时，会有一张公共的任务卡，例如“用5张牌达到21点”，完成任务的玩家获得额外奖励。"
+      ]
+    },
+    "rules": {
+      "objective": "让手中牌的点数总和尽可能接近21点，但不能超过，并比庄家的点数大。",
+      "setup": "所有玩家下注。庄家给每位玩家和自己发两张牌，玩家的牌通常是明牌，庄家则一张明牌一张暗牌。",
+      "gameplay": "玩家轮流决定是否“要牌”（Hit）以增加点数，或“停牌”（Stand）。玩家也可以选择“加倍下注”（Double Down）或“分牌”（Split）。如果玩家的点数超过21点，则“爆牌”（Bust），立即输掉赌注。所有玩家结束后，庄家亮出底牌，并按固定规则要牌或停牌。最后比较点数决定输赢。"
+    },
+    "aiAnalysis": {
+      "coreFun": "在“要牌”和“停牌”之间进行决策的“博运气”刺激感，以及通过策略（如算牌）来获得优势的挑战。",
+      "keyDecisions": "是否要牌，以及何时加倍下注或分牌。",
+      "potentialFlaws": "本质上是赌博游戏，且赌场在规则上占有微弱优势。",
+      "designImpact": "“博运气”机制的典范，简单易学，但包含着深刻的概率学和风险管理策略。它能极好地锻炼玩家的快速决策能力、风险评估和基础的概率计算。"
+    },
+    "variants": ["西班牙21点", "浮桥21点"]
   },
   {
     "id": 7,
