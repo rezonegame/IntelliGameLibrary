@@ -13,6 +13,7 @@ export const GAMES_C_W_Z: Game[] = [
     "complexity": "Low",
     "category": "卡牌游戏",
     "mechanics": ["组合收集", "手牌管理", "吃墩 (捕获)"],
+    "tags": ["card_game", "fishing", "calculation", "italy"],
     "componentsDescription": "一副标准的52张扑克牌。计分通常用纸笔完成。",
     "historicalStory": "“赌场”（Casino）是世界上最著名的“钓鱼”类游戏之一，尤其在意大利和美国广为流传。它的名字并非指现代的赌博场所，而是源自意大利语，意为“社交俱乐部”或“乡间别墅”，表明它是一种轻松的社交游戏。其独特的计分方式，特别是对特定牌（如方块10和黑桃2）的奖励，为简单的玩法增添了策略深度。",
     "modificationSuggestion": {
@@ -50,6 +51,7 @@ export const GAMES_C_W_Z: Game[] = [
     "complexity": "Very Low",
     "category": "卡牌游戏",
     "mechanics": ["手牌管理", "万能牌"],
+    "tags": ["card_game", "shedding", "luck", "kids", "classic"],
     "componentsDescription": "一副或两副标准的52张扑克牌。",
     "historicalStory": "“疯八”是UNO的前身，也是20世纪最流行的纸牌游戏之一。它的名字来源于美国军队的俚语，用来指代精神不稳定的士兵（Section 8）。游戏简单、快节奏的特性使其在全球范围内广受欢迎。",
     "modificationSuggestion": {
@@ -85,6 +87,7 @@ export const GAMES_C_W_Z: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["吃墩", "团队合作"],
+    "tags": ["card_game", "trick_taking", "partnership", "classic", "england"],
     "componentsDescription": "一副标准的52张扑克牌。",
     "historicalStory": "惠斯特（Whist）在18世纪和19世纪的英国和美国是上流社会最流行的卡牌游戏。简·奥斯汀、埃德加·爱伦·坡等许多著名作家的作品中都曾提及此游戏。它没有现代桥牌复杂的叫牌体系，乐趣纯粹来自于打牌过程中的推理和与搭档的默契配合。可以说，几乎所有现代的搭档吃墩游戏都流淌着惠斯特的血液。",
     "modificationSuggestion": {
@@ -122,6 +125,7 @@ export const GAMES_C_W_Z: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["吃墩", "组合收集", "手牌管理"],
+    "tags": ["card_game", "climbing", "shedding", "china", "social"],
     "componentsDescription": "一副或两副标准的52张扑克牌，有时会加入大小王。",
     "historicalStory": "“争上游”是中国民间最普及的扑克牌游戏之一，其规则简单、变化多样，衍生出了“斗地主”、“升级”等无数流行变体。这类游戏的核心是“压制”与“反压制”，玩家需要不断打出比上家更大的牌型。它不仅是游戏，更是中国社会文化中社交和娱乐的重要组成部分。",
     "modificationSuggestion": {
@@ -159,6 +163,7 @@ export const GAMES_C_W_Z: Game[] = [
     "complexity": "Very Low",
     "category": "卡牌游戏",
     "mechanics": ["运气"],
+    "tags": ["card_game", "luck", "kids", "classic", "war"],
     "componentsDescription": "一副标准的52张扑克牌。",
     "historicalStory": "“战争”是世界上最简单、最广为人知的纸牌游戏之一，其历史悠久，难以追溯。它没有任何策略可言，完全由发牌顺序决定胜负。正因为如此，它常常是儿童学习比较数字大小的第一个工具。",
     "modificationSuggestion": {

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
 import { UiService } from '../../../../core/services/ui.service';
-import { FeedbackService } from '../../../feedback/services/feedback.service';
+import { FeedbackService, InspirationIdea } from '../../../feedback/services/feedback.service';
 
 
 @Component({
@@ -167,40 +167,34 @@ export class InspirationWorkshopComponent {
   isLoading = signal(false);
   aiResult = signal<any>(null);
 
-  // Expose Object.keys to the template
   objectKeys = Object.keys;
 
-  // Mechanic Fusion state
   allMechanics = computed(() => [...new Set(this.gameService.games().flatMap(g => g.mechanics))].sort((a: string, b: string) => a.localeCompare(b, 'zh-Hans-CN')));
   selectedMechanics = signal<string[]>([]);
   
-  // Theme Remodeler state
   remodelGame = signal('国际象棋');
   remodelTheme = signal('');
 
-  // "What If" Simulator state
   whatIfGame = signal('国际跳棋');
   whatIfRule = signal('');
 
   constructor() {
     effect(() => {
-      // Clear previous result when activeTab changes.
       this.activeTab(); 
       this.aiResult.set(null);
     });
 
-    // Effect to handle incoming context from other components
     effect(() => {
       const context = this.uiService.inspirationContext();
       if (context) {
         if (context.type === 'remodel') {
           this.activeTab.set('主题改造');
           this.remodelGame.set(context.game.name);
-          this.remodelTheme.set(context.suggestion || ''); // Pre-fill theme
+          this.remodelTheme.set(context.suggestion || '');
         } else if (context.type === 'simulate') {
           this.activeTab.set('“假如”模拟器');
           this.whatIfGame.set(context.game.name);
-          this.whatIfRule.set(context.suggestion || ''); // Pre-fill rule
+          this.whatIfRule.set(context.suggestion || '');
         }
       }
     });
@@ -212,19 +206,19 @@ export class InspirationWorkshopComponent {
     );
   }
 
-  private async runGeneration(generator: () => Promise<any>, input: any) {
+  private async runGeneration(generator: () => Promise<any>, type: string, input: any) {
       this.isLoading.set(true);
       this.aiResult.set(null);
       try {
           const res = await generator();
           this.aiResult.set(res);
-          // Silently log the successful generation
-          this.feedbackService.logInspirationIdea({
+          const idea: InspirationIdea = {
             timestamp: new Date().toISOString(),
-            type: this.activeTab(),
-            input: input,
+            type,
+            input,
             output: res
-          }).subscribe(); // Fire and forget
+          };
+          this.feedbackService.logInspirationIdea(idea).subscribe();
       } catch (error) {
           console.error("生成失败", error);
       } finally {
@@ -233,17 +227,26 @@ export class InspirationWorkshopComponent {
   }
 
   generateFusion() {
-    const input = { mechanics: this.selectedMechanics() };
-    this.runGeneration(() => this.aiService.fuseMechanics(this.selectedMechanics()), input);
+    this.runGeneration(
+      () => this.aiService.fuseMechanics(this.selectedMechanics()),
+      'fusion',
+      { mechanics: this.selectedMechanics() }
+    );
   }
 
   generateRemodel() {
-    const input = { game: this.remodelGame(), theme: this.remodelTheme() };
-    this.runGeneration(() => this.aiService.remodelTheme(this.remodelGame(), this.remodelTheme()), input);
+    this.runGeneration(
+      () => this.aiService.remodelTheme(this.remodelGame(), this.remodelTheme()),
+      'remodel',
+      { game: this.remodelGame(), theme: this.remodelTheme() }
+    );
   }
 
   generateSimulation() {
-    const input = { game: this.whatIfGame(), rule: this.whatIfRule() };
-    this.runGeneration(() => this.aiService.simulateRuleChange(this.whatIfGame(), this.whatIfRule()), input);
+    this.runGeneration(
+      () => this.aiService.simulateRuleChange(this.whatIfGame(), this.whatIfRule()),
+      'simulation',
+      { game: this.whatIfGame(), rule: this.whatIfRule() }
+    );
   }
 }

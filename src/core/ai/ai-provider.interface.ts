@@ -15,6 +15,8 @@ export interface AiProvider {
   
   init(apiKey: string, baseUrl?: string): Promise<boolean>;
 
+  testConnection(apiKey: string, baseUrl?: string): Promise<{ success: boolean, message: string }>;
+
   identifyGame(description: string): Promise<{ name: string; isPublicDomain: boolean; confidenceScore: number; analysis: string; fullGameData?: Game } | null>;
   
   fuseMechanics(mechanics: string[]): Promise<any>;

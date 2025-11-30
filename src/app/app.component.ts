@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, afterNextRender } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, OnInit, afterNextRender, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameBrowserComponent } from '../features/game-library/components/game-browser/game-browser.component';
 import { AiIdentifierComponent } from '../features/ai-tools/components/ai-identifier/ai-identifier.component';
@@ -6,12 +6,12 @@ import { InspirationWorkshopComponent } from '../features/ai-tools/components/in
 import { ApiKeyModalComponent } from '../core/ui/api-key-modal/api-key-modal.component';
 import { ToastContainerComponent } from '../core/ui/toast/toast.component';
 import { SidebarComponent } from './sidebar.component';
-import { MessageBoardModalComponent } from '../features/feedback/components/message-board-modal.component';
-import { AnalyticsService } from '../core/services/analytics.service';
 import { GameService } from '../features/game-library/services/game.service';
 import { Game } from '../core/models/game.model';
 import { TipModalComponent } from '../core/ui/tip-modal/tip-modal.component';
 import { UiService } from '../core/services/ui.service';
+import { MessageBoardModalComponent } from '../features/feedback/components/message-board-modal.component';
+import { AnalyticsService } from '../core/services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -24,8 +24,8 @@ import { UiService } from '../core/services/ui.service';
     InspirationWorkshopComponent,
     ApiKeyModalComponent,
     ToastContainerComponent,
-    MessageBoardModalComponent,
     TipModalComponent,
+    MessageBoardModalComponent,
   ],
   template: `
 <div class="relative min-h-screen bg-slate-50 text-slate-800 md:flex">
@@ -107,15 +107,13 @@ import { UiService } from '../core/services/ui.service';
       <div>
         <h4 class="font-semibold text-slate-800 mb-2">更新日志</h4>
         <ul class="list-disc list-inside space-y-1.5 pl-1">
+          <li><b>v3.0:</b> 恢复访客统计、留言板和后台分析功能。</li>
+          <li><b>v2.9:</b> 架构简化，移除所有后端服务依赖，提升应用速度与稳定性。</li>
+          <li><b>v2.8:</b> 新增客户端 AI 服务“连接测试”功能。</li>
+          <li><b>v2.7:</b> 新增“测试服务器连接”功能，用于验证 Vercel 环境变量配置。</li>
+          <li><b>v2.6:</b> “今日聚焦”升级为由服务器 AI 驱动，提供每日推荐语和灵感范例。</li>
           <li><b>v2.5:</b> 新增“今日聚焦”AI灵感推荐，一键探索游戏改造新玩法。</li>
           <li><b>v2.4:</b> AI 服务智能切换优化，提升启动体验。</li>
-          <li><b>v2.3:</b> 全面 UI/UX 体验升级（今日聚焦、情境化AI工具等）。</li>
-          <li><b>v2.2:</b> 新增5款经典公共版权卡牌游戏。</li>
-          <li><b>v2.1.1:</b> 新增每日tips，告诉你桌游背后的故事。</li>
-          <li><b>v2.1:</b> 新增赌场、惠斯特、争上游三款游戏。</li>
-          <li><b>v2.0:</b> 升级为全局搜索，可检索所有游戏文本。</li>
-          <li><b>v1.5:</b> 引入多 AI 服务商支持 (Gemini, OpenAI 等)。</li>
-          <li><b>v1.0:</b> 应用发布。</li>
         </ul>
       </div>
     </div>
@@ -156,20 +154,21 @@ import { UiService } from '../core/services/ui.service';
 })
 export class AppComponent implements OnInit {
   uiService = inject(UiService);
-  private analyticsService = inject(AnalyticsService);
   private gameService = inject(GameService);
+  private analyticsService = inject(AnalyticsService);
 
   isMobileMenuOpen = signal(false);
-  isFeedbackModalOpen = signal(false);
   isHelpVisible = signal(false);
   isFabMenuOpen = signal(false);
+  isFeedbackModalOpen = signal(false);
 
-  // Signals for the new Tip Modal
   tipGame = signal<Game | null>(null);
   isTipModalOpen = signal(false);
 
   constructor() {
-    this.analyticsService.logEvent('pageView', this.uiService.currentView()); // Log initial view
+    effect(() => {
+      this.analyticsService.logEvent('pageView', this.uiService.currentView());
+    });
   }
 
   ngOnInit() {
@@ -177,6 +176,14 @@ export class AppComponent implements OnInit {
     if (!sharedGameHandled) {
       this.showRandomTip();
     }
+  }
+
+  openFeedbackModal() {
+    this.isFeedbackModalOpen.set(true);
+  }
+
+  closeFeedbackModal() {
+    this.isFeedbackModalOpen.set(false);
   }
 
   private handleSharedGameLink(): boolean {
@@ -224,13 +231,5 @@ export class AppComponent implements OnInit {
       this.gameService.openGameDetails.set(game);
     }
     this.isTipModalOpen.set(false);
-  }
-
-  openFeedbackModal() {
-    this.isFeedbackModalOpen.set(true);
-  }
-
-  closeFeedbackModal() {
-    this.isFeedbackModalOpen.set(false);
   }
 }

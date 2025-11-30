@@ -1,14 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, effect, untracked, afterNextRender } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
 import { Game } from '../../../../core/models/game.model';
 import { GameService } from '../../services/game.service';
 import { GameCardComponent } from '../game-card/game-card.component';
 import { GameDetailModalComponent } from '../game-detail-modal/game-detail-modal.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { GameCardSkeletonComponent } from '../game-card-skeleton/game-card-skeleton.component';
 import { UiService } from '../../../../core/services/ui.service';
-import { AiService, DailyFocusData } from '../../../../core/ai/ai.service';
 
 @Component({
   selector: 'app-game-browser',
@@ -28,15 +26,8 @@ import { AiService, DailyFocusData } from '../../../../core/ai/ai.service';
               <p class="text-sm font-semibold text-cyan-600">{{ game.category }}</p>
               <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ game.name }}</h3>
               
-              <div class="mt-4 text-lg text-slate-700 border-l-4 border-cyan-400 pl-4 py-2 min-h-[5rem] flex items-center">
-                @if (dailyFocusDataIsLoading()) {
-                  <div class="space-y-2 animate-pulse w-full">
-                    <div class="h-5 bg-slate-200 rounded w-full"></div>
-                    <div class="h-5 bg-slate-200 rounded w-5/6"></div>
-                  </div>
-                } @else if (dailyFocusData(); as data) {
-                  <p>{{ data.dailyReason }}</p>
-                }
+              <div class="mt-4 text-lg text-slate-700 border-l-4 border-cyan-400 pl-4 py-2">
+                <p>{{ dailyReason() }}</p>
               </div>
 
               <div class="mt-4 flex flex-wrap gap-2 text-xs">
@@ -53,31 +44,11 @@ import { AiService, DailyFocusData } from '../../../../core/ai/ai.service';
               <div (click)="requestInspiration('remodel')" class="p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-all group cursor-pointer">
                 <h4 class="font-semibold text-slate-800 group-hover:text-cyan-700">改造此游戏主题</h4>
                 <p class="text-sm text-slate-500 mt-1">将《{{ remodel.game.name }}》代入“{{ remodel.theme }}”主题会怎么样？</p>
-                @if (dailyFocusDataIsLoading()) {
-                  <div class="mt-3 space-y-2 animate-pulse">
-                    <div class="h-3 bg-slate-200 rounded w-3/4"></div>
-                    <div class="h-3 bg-slate-200 rounded w-full"></div>
-                  </div>
-                } @else if (dailyFocusData()?.remodelResult; as result) {
-                  <div class="mt-3 pt-3 border-t border-slate-200/80 text-sm text-slate-600">
-                    <p><strong>{{ result.newName }}:</strong> {{ result.worldbuilding }}</p>
-                  </div>
-                }
               </div>
               @if(simulationSuggestion(); as simulation) {
                 <div (click)="requestInspiration('simulate')" class="p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-all group cursor-pointer">
                   <h4 class="font-semibold text-slate-800 group-hover:text-cyan-700">模拟规则变更</h4>
                   <p class="text-sm text-slate-500 mt-1">为《{{ simulation.game.name }}》引入“{{ simulation.mechanic }}”机制会怎么样？</p>
-                  @if (dailyFocusDataIsLoading()) {
-                    <div class="mt-3 space-y-2 animate-pulse">
-                      <div class="h-3 bg-slate-200 rounded w-3/4"></div>
-                      <div class="h-3 bg-slate-200 rounded w-full"></div>
-                    </div>
-                  } @else if (dailyFocusData()?.simulateResult; as result) {
-                    <div class="mt-3 pt-3 border-t border-slate-200/80 text-sm text-slate-600">
-                      <p><strong>策略影响:</strong> {{ result.impactOnStrategy }}</p>
-                    </div>
-                  }
                 </div>
               }
             </div>
@@ -183,9 +154,7 @@ import { AiService, DailyFocusData } from '../../../../core/ai/ai.service';
 })
 export class GameBrowserComponent {
   gameService = inject(GameService);
-  analyticsService = inject(AnalyticsService);
   uiService = inject(UiService);
-  aiService = inject(AiService);
   selectedGame = signal<Game | null>(null);
 
   // Filter state
@@ -197,8 +166,7 @@ export class GameBrowserComponent {
 
   // UX signals for Today's Focus
   todayFocusGame = signal<Game | null>(null);
-  dailyFocusData = signal<DailyFocusData | null>(null);
-  dailyFocusDataIsLoading = signal(true);
+  dailyReason = signal<string>('');
   remodelSuggestion = signal<{ game: Game, theme: string } | null>(null);
   simulationSuggestion = signal<{ game: Game, mechanic: string } | null>(null);
   
@@ -263,7 +231,7 @@ export class GameBrowserComponent {
       }
     });
 
-    // Effect for search loading UX and analytics
+    // Effect for search loading UX
     effect((onCleanup) => {
       const term = this.searchTerm();
       if (!term) {
@@ -273,7 +241,6 @@ export class GameBrowserComponent {
 
       this.isSearching.set(true);
       const timer = setTimeout(() => {
-        this.analyticsService.logEvent('search', term);
         this.isSearching.set(false);
       }, 400);
 
@@ -282,51 +249,63 @@ export class GameBrowserComponent {
   }
 
   private initializeTodayFocus() {
-    const today = new Date().toISOString().split('T')[0];
     const games = this.gameService.games();
     if (games.length === 0) return;
 
-    // Stable selection based on date
-    const index = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % games.length;
-    const game = games[index];
+    // Stable selection based on date and season
+    const today = new Date();
+    const month = today.getMonth();
+    const season = (month >= 2 && month <= 4) ? 'spring' :
+                   (month >= 5 && month <= 7) ? 'summer' :
+                   (month >= 8 && month <= 10) ? 'autumn' : 'winter';
+
+    const seasonalGames = games.filter(g => g.tags?.includes(season));
+    const pool = seasonalGames.length > 0 ? seasonalGames : games;
+    
+    const dayOfYear = (Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(today.getFullYear(), 0, 0)) / 86400000;
+    const index = Math.floor(dayOfYear % pool.length);
+    const game = pool[index];
     this.todayFocusGame.set(game);
     
-    // Generate AI suggestions prompts
+    // Generate inspiration suggestions prompts
     this.generateInspirationSuggestions(game);
     
-    // Fetch or get cached AI daily data
-    this.fetchDailyFocusData(game, today);
+    // Generate local daily reason
+    this.dailyReason.set(this.generateLocalDailyReason(game, season));
   }
-
-  private fetchDailyFocusData(game: Game, today: string) {
-    const cacheKey = `daily-focus-data-${today}`;
-    const cachedData = localStorage.getItem(cacheKey);
-
-    if (cachedData) {
-      const { gameId, data } = JSON.parse(cachedData);
-      if (gameId === game.id) {
-        this.dailyFocusData.set(data);
-        this.dailyFocusDataIsLoading.set(false);
-        return;
+  
+  private generateLocalDailyReason(game: Game, season: string): string {
+    // Prioritize tags
+    if (game.tags?.includes(season)) {
+      switch (season) {
+        case 'spring': return `春回大地，万物复苏，不如在《${game.name}》中播下智慧的种子，静待策略之花绽放。`;
+        case 'summer': return `炎炎夏日，最宜静心对弈。在《${game.name}》的世界里，寻找一份宁静的策略之乐。`;
+        case 'autumn': return `秋意正浓，正是收获思考果实的季节。与朋友来一局《${game.name}》，享受思维碰撞的乐趣。`;
+        case 'winter': return `冬日漫长，最适合与朋友围坐，来一局烧脑的《${game.name}》，点燃思维的火花。`;
       }
     }
-    
-    // If no valid cache, fetch from AI
-    this.dailyFocusDataIsLoading.set(true);
-    const remodel = this.remodelSuggestion();
-    const simulation = this.simulationSuggestion();
-
-    if (!remodel || !simulation) {
-        this.dailyFocusDataIsLoading.set(false);
-        return;
+    if (game.tags?.includes('sowing')) {
+        return `在这充满希望的季节，最适合玩一局象征播种与收获的《${game.name}》，体验古老的农耕智慧。`;
     }
 
-    this.aiService.getDailyFocusData(game.name, today, remodel.theme, simulation.mechanic).subscribe(data => {
-        this.dailyFocusData.set(data);
-        localStorage.setItem(cacheKey, JSON.stringify({ gameId: game.id, data }));
-        this.dailyFocusDataIsLoading.set(false);
-    });
+    // Fallback to category/complexity
+    switch (game.category) {
+      case '抽象策略':
+        return `抛开繁杂的背景，今天就在《${game.name}》的棋盘上，来一场纯粹的智力体操吧！`;
+      case '卡牌游戏':
+        return `洗牌、发牌、出牌... 今天，就让《${game.name}》带你重温卡牌在指尖流转的经典魅力。`;
+      case '竞赛游戏':
+        return `目标就在前方！今天，就在《${game.name}》中体验冲向终点的紧张与刺激。`;
+    }
+
+    if (game.complexity === 'Very Low' || game.complexity === 'Low') {
+      return `无需复杂规则，今天就在《${game.name}》中享受最直接、最纯粹的快乐吧！`;
+    }
+
+    // Generic fallback
+    return `探索经典，品味智慧。今天，不妨沉下心来，体验一局《${game.name}》的独特魅力。`;
   }
+
 
   private generateInspirationSuggestions(game: Game) {
     const randomTheme = this.randomThemes[Math.floor(Math.random() * this.randomThemes.length)];
@@ -359,7 +338,6 @@ export class GameBrowserComponent {
 
   selectGame(game: Game) {
     this.selectedGame.set(game);
-    this.analyticsService.logEvent('viewGameDetails', game.name);
   }
 
   clearSelectedGame() {

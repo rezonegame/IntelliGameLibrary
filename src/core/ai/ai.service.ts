@@ -7,17 +7,11 @@ import { OpenAIProvider } from './providers/openai.provider';
 import { DeepSeekProvider } from './providers/deepseek.provider';
 import { ClaudeProvider } from './providers/claude.provider';
 import { UiService } from '../services/ui.service';
-import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
+import { Observable, catchError, from, of, tap, throwError } from 'rxjs';
 
 const API_KEYS_STORAGE_ITEM = 'ai-api-keys';
 const CUSTOM_ENDPOINTS_STORAGE_ITEM = 'ai-custom-endpoints';
 const ACTIVE_PROVIDER_STORAGE_ITEM = 'ai-active-provider';
-
-export interface DailyFocusData {
-  dailyReason: string;
-  remodelResult: { newName: string; worldbuilding: string };
-  simulateResult: { impactOnStrategy: string; overallConclusion: string };
-}
 
 @Injectable({ providedIn: 'root' })
 export class AiService {
@@ -191,34 +185,30 @@ export class AiService {
     return this.execute(p => p.simulateRuleChange(...args));
   }
 
-  getDailyFocusData(gameName: string, date: string, randomTheme: string, randomMechanic: string): Observable<DailyFocusData> {
-    const body = { gameName, date, randomTheme, randomMechanic };
-    return this.http.post<DailyFocusData>('/api/generate-daily-reason', body)
-      .pipe(
-        catchError(error => {
-          console.error('Failed to get daily focus data via proxy', error);
-          this.toastService.show('获取每日聚焦内容失败', 'error');
-          // Return a fallback object
-          return of({
-            dailyReason: '今天，就让这款经典游戏带你重温最纯粹的快乐吧！',
-            remodelResult: { newName: '加载失败', worldbuilding: '无法获取AI生成内容。' },
-            simulateResult: { impactOnStrategy: '加载失败', overallConclusion: '无法获取AI生成内容。' }
-          });
-        })
-      );
-  }
+  testClientConnection(providerId: AiProviderType, key: string, endpoint?: string): Observable<{ success: boolean; message: string; }> {
+    let providerInstance: AiProvider | null = null;
 
-  testServerConnection(): Observable<{ success: boolean; message: string }> {
-    return this.http.get<{ success: boolean; message:string }>('/api/test-gemini-key').pipe(
-        tap(response => {
-            this.toastService.show(response.message, response.success ? 'success' : 'error', 5000);
-        }),
-        catchError(error => {
-            const message = error.error?.message || '测试请求失败，请检查网络或服务器函数日志。';
-            this.toastService.show(message, 'error', 5000);
-            console.error('Server connection test failed', error);
-            return throwError(() => new Error(message));
-        })
+    switch (providerId) {
+      case 'gemini': providerInstance = this.geminiProvider; break;
+      case 'openai': providerInstance = this.openAiProvider; break;
+      case 'deepseek': providerInstance = this.deepSeekProvider; break;
+      case 'claude': providerInstance = this.claudeProvider; break;
+      case 'custom': providerInstance = this.openAiProvider; break;
+      default:
+        const msg = `不支持的提供商: ${providerId}`;
+        this.toastService.show(msg, 'error');
+        return of({ success: false, message: msg });
+    }
+
+    return from(providerInstance.testConnection(key, endpoint)).pipe(
+      tap(response => {
+        this.toastService.show(response.message, response.success ? 'success' : 'error', 4000);
+      }),
+      catchError(error => {
+        const message = error.message || '发生未知错误';
+        this.toastService.show(message, 'error', 4000);
+        return of({ success: false, message });
+      })
     );
   }
 }

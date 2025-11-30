@@ -13,6 +13,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["连接", "区域控制"],
+    "tags": ["strategy", "connection", "go_variant", "modern"],
     "componentsDescription": "一个13x13或19x19的围棋棋盘和黑白两色棋子。",
     "historicalStory": "六贯棋（Gonnect）由João Pedro Neto在2002年发明，是对围棋和连接游戏的有趣融合。它的规则非常简单：如果一个玩家的棋子被吃掉，他就输了。如果棋盘下满，领地多的玩家获胜。但是，如果有玩家成功连接了六个己方棋子，他将立即获胜。这个“突然死亡”的胜利条件，为传统的领地游戏增加了新的维度。",
     "modificationSuggestion": {
@@ -49,6 +50,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "强制吃子"],
+    "tags": ["strategy", "capture", "classic", "ancient"],
     "componentsDescription": "通常在一个8x8的棋盘（如国际象棋棋盘）上进行，但只使用深色格子。每位玩家有12个扁平的圆形棋子，分为深浅两种颜色。",
     "historicalStory": "国际跳棋的直接祖先是“西非跳棋”，最早记录于公元10世纪的西班牙。现代规则，特别是强制吃子，是在16世纪的法国形成的。1994年，计算机程序“Chinook”被正式认定为世界跳棋冠军，这是第一个在竞技游戏中完全“破解”并击败人类最强者的AI，标志着人工智能的一个重要里程碑。",
     "modificationSuggestion": {
@@ -87,6 +89,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "High",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子"],
+    "tags": ["strategy", "war", "intellectual", "classic", "duel", "winter"],
     "componentsDescription": "一副国际象棋包含一个8x8的棋盘，以及32个棋子，分为黑白两方，每方各16个。棋子通常由木材或塑料制成，设计具有标志性，易于区分。",
     "historicalStory": "国际象棋的起源可追溯到约公元6世纪的印度，其前身是象征着军队四个部分的“恰图兰卡”。它经由波斯和阿拉伯世界传播，最终在15世纪的欧洲演变为现代规则。一个著名的传说是关于棋盘与麦粒的故事：发明者向国王请求在棋盘上按指数增长的方式放置麦粒作为赏赐，最终发现全国的麦子都不够支付，这个故事生动地展示了指数增长的力量。",
     "modificationSuggestion": {
@@ -125,6 +128,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["模式构建", "区域控制"],
+    "tags": ["strategy", "connection", "capture", "modern"],
     "componentsDescription": "一个由32个三角形组成的菱形网格棋盘，以及黑白两色的棋子。",
     "historicalStory": "孤胆钻石（Diamond）是一款由Mark Steere在2005年设计的现代抽象策略游戏。它属于连接类游戏，但通过引入“夹心”吃子机制和多重胜利条件，创造了独特的策略博弈。它的双重胜利条件，迫使玩家像走钢丝一样在进攻和防守两种目标之间寻找微妙的平衡。",
     "modificationSuggestion": {
@@ -163,6 +167,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "不对称"],
+    "tags": ["strategy", "asymmetric", "hunt", "modern"],
     "componentsDescription": "一个特殊的十字形棋盘，9个矮人棋子和1个狮鹫棋子。",
     "historicalStory": "狮鹫棋是一款现代设计的不对称游戏，其灵感来源于经典的“狐狸和鹅”类狩猎游戏。它通过引入狮鹫独特的“安抚”和“猛扑”能力，以及矮人的“筑墙”能力，为古老的狩猎游戏注入了新的活力和策略深度。",
     "modificationSuggestion": {
@@ -199,6 +204,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["网格移动", "竞赛"],
+    "tags": ["strategy", "race", "unique_movement", "modern"],
     "componentsDescription": "一个6x6的棋盘，以及每位玩家6个棋子。",
     "historicalStory": "吉哲斯棋由Claude Leroy在1985年设计，是一款规则非常独特的竞赛游戏。它的核心创新在于，棋子的移动能力不是固定的，而是由其在棋盘上的位置动态决定的。这个简单的规则涌现出了非常复杂的战术计算，使其成为抽象游戏爱好者中的一颗遗珠。",
     "modificationSuggestion": {
@@ -235,6 +241,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["区域控制", "吃子 (翻转)"],
+    "tags": ["strategy", "capture", "territory", "classic"],
     "componentsDescription": "一个标准的8x8棋盘和64个双面棋子，一面为黑色，另一面为白色。",
     "historicalStory": "黑白棋（Reversi）于1883年发明，而现代商标版本“奥赛罗”（Othello）则由日本人长谷川五郎在1971年进行了规则的标准化和推广。1997年，一个名为“Logistello”的计算机程序击败了当时的黑白棋人类世界冠军村上健，展示了计算机在高度战术性和位置评估的棋盘游戏中的强大实力。",
     "modificationSuggestion": {
@@ -273,6 +280,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["吃墩", "叫牌", "团队合作"],
+    "tags": ["card_game", "trick_taking", "partnership", "bidding", "usa"],
     "componentsDescription": "一副标准的52张扑克牌。",
     "historicalStory": "黑桃A（Spades）是在20世纪30年代于美国发明的，被认为是桥牌的一个简化变种。它在美国军队中尤其流行，并在二战期间由士兵们传播到世界各地。在美国的许多大学和家庭聚会中，黑桃A不仅仅是一种游戏，更是一种文化传统，以激烈的竞争和搭档间的“唇枪舌战”而闻名。",
     "modificationSuggestion": {
@@ -311,6 +319,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Low",
     "category": "卡牌游戏",
     "mechanics": ["吃墩", "手牌管理"],
+    "tags": ["card_game", "trick_taking", "evasion", "classic", "windows_classic"],
     "componentsDescription": "一副标准的52张扑克牌。有时会使用纸和笔来计分。",
     "historicalStory": "红心大战属于“惠斯特”游戏家族，现代规则在19世纪末的美国发展成型，特别是“射月”规则的加入，为游戏增添了重要的策略转折点。它因被内置于微软Windows操作系统而闻名于世，成为了一代人的电脑启蒙游戏，让无数办公室职员体验了“局域网对战”的乐趣。",
     "modificationSuggestion": {
@@ -349,6 +358,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "不对称"],
+    "tags": ["strategy", "asymmetric", "hunt", "nepal"],
     "componentsDescription": "一个5x5的网格棋盘，带有对角线。有4个代表“老虎”的棋子和20个代表“山羊”的棋子。",
     "historicalStory": "虎棋（Bagh-Chal，尼泊尔语意为“老虎移动”）是尼泊尔的国粹游戏。它是一种不对称的狩猎游戏，象征着智慧（山羊）与力量（老虎）的对抗。在尼泊尔的村庄里，虎棋棋盘常常被刻在平坦的石头或寺庙的台阶上，成为公共空间的一部分，是维系社区情感的纽带。",
     "modificationSuggestion": {
@@ -387,6 +397,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "不对称"],
+    "tags": ["strategy", "asymmetric", "hunt", "medieval", "europe"],
     "componentsDescription": "一个33个点的十字形棋盘，一个代表“狐狸”的棋子，以及13到17个代表“鹅”的棋子。",
     "historicalStory": "“狐狸和鹅”是一类“狩猎游戏”的统称，这类游戏在中世纪的北欧非常流行，其原型可以追溯到维京时代的“维京棋”。在维多利亚时代的英国家庭中，它是一款非常受欢迎的儿童游戏，被认为能够培养孩子们的逻辑思维和合作意识（尽管是抽象的）。",
     "modificationSuggestion": {
@@ -425,6 +436,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["组合收集", "模式构建"],
+    "tags": ["card_game", "combo", "japan", "artistic", "seasons"],
     "componentsDescription": "一副48张的花札牌，分为12个月份，每个月份有4张代表该季节植物的牌。",
     "historicalStory": "花札（Hanafuda）起源于16世纪，当时葡萄牙商人将西方纸牌带到日本。为了规避幕府的禁赌令，纸牌的设计不断演变，最终形成了这种没有数字、只有精美花卉图案的独特卡牌。任天堂公司在1889年成立时，就是一家生产和销售花札的公司。",
     "modificationSuggestion": {
@@ -461,6 +473,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "High",
     "category": "抽象策略",
     "mechanics": ["连接", "模式构建"],
+    "tags": ["strategy", "connection", "modern", "complex"],
     "componentsDescription": "一个六边形的网格棋盘，以及两种颜色的棋子。",
     "historicalStory": "哈瓦那（Havannah）由Christian Freeling在1979年发明，是“海克斯棋”的复杂变体。它通过引入三种不同的胜利条件（桥、叉、环），极大地增加了游戏的策略维度，被认为是抽象策略游戏设计的一个杰作。",
     "modificationSuggestion": {
@@ -497,6 +510,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["连接", "区域控制"],
+    "tags": ["strategy", "connection", "math", "modern"],
     "componentsDescription": "一个11x11或更大尺寸的菱形六边形网格棋盘，以及两种颜色的棋子。",
     "historicalStory": "海克斯棋（Hex）在20世纪40年代被两位数学家独立发明：丹麦的皮特·海恩和美国的约翰·纳什（电影《美丽心灵》的原型）。这个游戏在博弈论和数学领域有重要地位，因为它的一些特性（如“策略窃取”论证证明了先手必胜，以及游戏不会以平局结束）非常优雅。",
     "modificationSuggestion": {
@@ -534,6 +548,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "不对称"],
+    "tags": ["strategy", "asymmetric", "hunt", "viking", "europe"],
     "componentsDescription": "一个十字形的棋盘，一个“狐狸”棋子和13个“羊”棋子。",
     "historicalStory": "Halatafl是维京棋（Hnefatafl）的一个变体，专注于狩猎场景。在斯堪的纳维亚的冬天，这类游戏是室内消遣的重要方式。它反映了北欧文化中对策略、狡猾和团队合作的重视。",
     "modificationSuggestion": {
@@ -570,6 +585,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子"],
+    "tags": ["strategy", "capture", "japan", "shogi_variant"],
     "componentsDescription": "一个9x9的将棋棋盘，每位玩家18个“步兵”棋子。",
     "historicalStory": "剪刀将棋（Hasami Shogi）是日本将棋的一个流行变体，尤其在儿童中广受欢迎。它简化了将棋的复杂规则，只保留了“步兵”和一种独特的“夹心”吃子方式，使其成为学习更复杂棋类游戏的绝佳入门。",
     "modificationSuggestion": {
@@ -607,6 +623,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Very Low",
     "category": "技巧游戏",
     "mechanics": ["投掷", "技巧"],
+    "tags": ["dexterity", "throwing", "outdoor", "usa", "summer"],
     "componentsDescription": "两个铁桩或木桩，以及四个马蹄铁。",
     "historicalStory": "投掷马蹄铁的游戏被认为起源于罗马士兵投掷废弃马蹄铁的消遣活动。它在美国非常流行，尤其是在乡村地区，是野餐和家庭聚会的经典项目。世界马蹄铁投掷者协会成立于1914年，负责规范比赛规则。",
     "modificationSuggestion": {
@@ -642,6 +659,7 @@ export const GAMES_G_H: Game[] = [
     "complexity": "Very Low",
     "category": "卡牌游戏",
     "mechanics": ["组合收集", "手牌管理", "记忆"],
+    "tags": ["card_game", "memory", "combo", "kids", "classic"],
     "componentsDescription": "一副标准的52张扑克牌。",
     "historicalStory": "“钓鱼”（Go Fish）是一款非常古老的儿童游戏，其历史可以追溯到几个世纪前。它通过简单的“询问-回答”机制，教会孩子们识别数字、进行分类和锻炼短期记忆力。它是许多人接触到的第一款纸牌游戏。",
     "modificationSuggestion": {

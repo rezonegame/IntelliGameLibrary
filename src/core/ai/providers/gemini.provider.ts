@@ -22,6 +22,23 @@ export class GeminiProvider implements AiProvider {
     }
   }
 
+  async testConnection(apiKey: string): Promise<{ success: boolean; message: string; }> {
+    try {
+      const testAi = new GoogleGenAI({ apiKey });
+      await testAi.models.generateContent({ model: 'gemini-2.5-flash', contents: 'Hi' });
+      return { success: true, message: 'Gemini 连接成功！' };
+    } catch (error: any) {
+      console.error('Gemini connection test failed:', error);
+      let message = '连接失败。';
+      if (error.message?.includes('API key not valid')) {
+        message = '连接失败：API 密钥无效或已过期。';
+      } else if (error.message) {
+        message = `连接失败：${error.message}`;
+      }
+      return { success: false, message };
+    }
+  }
+
   private async generateContent(prompt: string, jsonSchema?: any): Promise<any> {
     if (!this.ai) {
       throw new Error('Gemini Provider 未初始化。');

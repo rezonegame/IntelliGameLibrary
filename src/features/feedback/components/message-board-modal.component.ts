@@ -150,19 +150,15 @@ export class MessageBoardModalComponent implements OnInit {
   private readonly ADMIN_SECRET_CODE = '小岛'; 
   readonly ADMIN_DISPLAY_NAME = 'Admin';
 
-  // Get a signal reference to the NgForm directive instance from the template
   messageFormRef = viewChild<NgForm>('messageForm');
   
   isAdmin = computed(() => this.newMessage.name === this.ADMIN_SECRET_CODE);
 
-  // Safely compute form validity using the viewChild reference
   isFormInvalid = computed(() => {
     const form = this.messageFormRef();
     if (this.currentView() === 'form') {
-      // If in form view, the button should be disabled if the form doesn't exist yet or is invalid.
       return !form?.valid;
     }
-    // In other views this specific button isn't shown, so its state doesn't matter.
     return false;
   });
 
@@ -227,7 +223,7 @@ export class MessageBoardModalComponent implements OnInit {
     this.feedbackService.postMessage(messageToSend).subscribe({
       next: () => {
         this.isPosting.set(false);
-        this.newMessage.message = ''; // Clear only message
+        this.newMessage.message = '';
         this.currentView.set('list');
         this.loadMessages();
       },

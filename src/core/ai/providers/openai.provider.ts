@@ -16,6 +16,26 @@ export class OpenAIProvider implements AiProvider {
     this.baseUrl = baseUrl || 'https://api.openai.com/v1/chat/completions';
     return !!apiKey;
   }
+
+  async testConnection(apiKey: string, baseUrl?: string): Promise<{ success: boolean, message: string }> {
+    const url = baseUrl || 'https://api.openai.com/v1/chat/completions';
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify({ model: this.model, messages: [{ role: 'user', content: 'Hi' }], max_tokens: 2 }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        const errorMsg = data.error?.message || '未知错误';
+        throw new Error(errorMsg);
+      }
+      return { success: true, message: '连接成功！' };
+    } catch (error: any) {
+      console.error('OpenAI connection test failed:', error);
+      return { success: false, message: `连接失败: ${error.message}` };
+    }
+  }
   
   private async generateContent(prompt: string, isJson: boolean): Promise<any> {
     if (!this.apiKey) {
@@ -68,7 +88,7 @@ export class OpenAIProvider implements AiProvider {
   }
 
   async identifyGame(description: string): Promise<{ name: string; isPublicDomain: boolean; confidenceScore: number; analysis: string; fullGameData?: Game } | null> {
-    const prompt = `你是一位桌面游戏历史和设计专家。请分析以下描述：“${description}”。请以 JSON 格式回应，所有字符串值都必须是简体中文。JSON 对象必须包含以下字段：“name”（游戏名），“isPublicDomain”（是否为公共领域，布尔值），“confidenceScore”（置信度，0.0到1.0），“analysis”（分析摘要）。如果游戏属于公共领域，还需包含 “fullGameData” 对象。该对象必须符合此结构：{id: number, name: string, originalName?: string, image: string, description: string, players: {min: number, max: number}, playTime: {min: number, max: number}, complexity: string ('Very Low' | 'Low' | 'Medium' | 'High' | 'Very High'), category: string, mechanics: string[], componentsDescription: string, historicalStory?: string, modificationSuggestion?: {themeSwaps: string[], mechanicFusions: string[]}, rules: {objective: string, setup: string, gameplay: string}, aiAnalysis: {coreFun: string, keyDecisions: string, potentialFlaws: string, designImpact: string}, variants: string[]}。id 应为一个较大的随机数。对于 image 字段，返回一个空字符串。对于 componentsDescription 字段，请提供详细的配件说明段落。对于 historicalStory 字段，请提供一段详实且有趣的史实或故事。对于 originalName，请提供游戏的原始或英文名称。对于 aiAnalysis.designImpact 字段，请在分析设计影响的同时，明确说明这款游戏可以锻炼或教授玩家的何种能力。对于 modificationSuggestion 对象，请在 themeSwaps 和 mechanicFusions 数组中分别提供至少两条丰富且有创意的改造建议。如果字段不适用，请省略。`;
+    const prompt = `你是一位桌面游戏历史和设计专家。请分析以下描述：“${description}”。请以 JSON 格式回应，所有字符串值都必须是简体中文。JSON 对象必须包含以下字段：“name”（游戏名），“isPublicDomain”（是否为公共领域，布尔值），“confidenceScore”（置信度，0.0到1.0），“analysis”（分析摘要）。如果游戏属于公共领域，还需包含 “fullGameData” 对象。该对象必须符合此结构：{id: number, name: string, originalName?: string, image: string, description: string, players: {min: number, max: number}, playTime: {min: number, max: number}, complexity: string (string, one of 'Very Low', 'Low', 'Medium', 'High', 'Very High'), category: string, mechanics: string[], componentsDescription: string, historicalStory?: string, modificationSuggestion?: {themeSwaps: string[], mechanicFusions: string[]}, rules: {objective: string, setup: string, gameplay: string}, aiAnalysis: {coreFun: string, keyDecisions: string, potentialFlaws: string, designImpact: string}, variants: string[]}。id 应为一个较大的随机数。对于 image 字段，返回一个空字符串。对于 componentsDescription 字段，请提供详细的配件说明段落。对于 historicalStory 字段，请提供一段详实且有趣的史实或故事。对于 originalName，请提供游戏的原始或英文名称。对于 aiAnalysis.designImpact 字段，请在分析设计影响的同时，明确说明这款游戏可以锻炼或教授玩家的何种能力。对于 modificationSuggestion 对象，请在 themeSwaps 和 mechanicFusions 数组中分别提供至少两条丰富且有创意的改造建议。如果字段不适用，请省略。`;
     return this.generateContent(prompt, true);
   }
 

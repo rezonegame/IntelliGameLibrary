@@ -13,6 +13,7 @@ export const GAMES_A: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子 (围困)"],
+    "tags": ["native_american", "strategy", "capture", "ancient"],
     "componentsDescription": "一个带有对角线的棋盘，类似于西非跳棋。每位玩家持有一定数量的棋子（通常是20-24个）。",
     "historicalStory": "这款游戏是北美洲西南部祖尼部落的传统游戏，其名字意为“石头移动”。它反映了在有限空间内进行围堵和反围堵的战术思想，是美洲原住民智慧的结晶。",
     "modificationSuggestion": {

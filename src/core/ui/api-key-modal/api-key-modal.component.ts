@@ -3,6 +3,9 @@ import { AiService } from '../../ai/ai.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AiProviderType, AI_PROVIDERS } from '../../ai/ai-provider.interface';
+import { finalize } from 'rxjs';
+
+type TestStatus = 'idle' | 'testing' | 'success' | 'failed';
 
 @Component({
   selector: 'app-api-key-modal',
@@ -49,7 +52,7 @@ import { AiProviderType, AI_PROVIDERS } from '../../ai/ai-provider.interface';
                   type="text"
                   #endpointInput
                   [value]="customEndpoint()"
-                  (input)="customEndpoint.set(endpointInput.value)"
+                  (input)="onEndpointChange(endpointInput.value)"
                   placeholder="例如: http://localhost:1234/v1/chat/completions"
                   class="w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
                 />
@@ -64,13 +67,14 @@ import { AiProviderType, AI_PROVIDERS } from '../../ai/ai-provider.interface';
                     type="password"
                     #apiKeyInput
                     [value]="apiKey()"
-                    (input)="apiKey.set(apiKeyInput.value)"
+                    (input)="onApiKeyChange(apiKeyInput.value)"
                     [placeholder]="'输入 ' + selectedProviderInfo()?.name + ' API 密钥'"
                     class="w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
                   />
-                  @if (hasStoredKey()) {
+                  @if (hasStoredKey() && apiKey() === getStoredKey()) {
                     <button 
                       (click)="deleteApiKey()"
+                      title="删除已存储的密钥"
                       class="px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-md hover:bg-red-200 transition-colors">
                       删除
                     </button>
@@ -78,11 +82,31 @@ import { AiProviderType, AI_PROVIDERS } from '../../ai/ai-provider.interface';
               </div>
             </div>
 
-            <div class="mt-6 text-right">
+            <div class="mt-6 flex justify-between items-center">
+              <button 
+                  (click)="testConnection()"
+                  class="relative px-5 py-2 border border-slate-300 text-slate-600 font-semibold rounded-md hover:bg-slate-100 transition-colors disabled:bg-slate-200 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
+                  [disabled]="!canTest() || testStatus() === 'testing'">
+                  @switch (testStatus()) {
+                    @case ('idle') { <span>测试连接</span> }
+                    @case ('testing') {
+                      <svg class="animate-spin h-5 w-5 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      <span class="ml-2">测试中...</span>
+                    }
+                    @case ('success') {
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                      <span>连接成功</span>
+                    }
+                    @case ('failed') {
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                      <span>连接失败</span>
+                    }
+                  }
+              </button>
               <button 
                   (click)="saveApiKey()"
                   class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed"
-                  [disabled]="!apiKey() || (selectedProvider() === 'custom' && !customEndpoint())">
+                  [disabled]="!canSave()">
                   保存并激活
               </button>
             </div>
@@ -118,9 +142,14 @@ export class ApiKeyModalComponent {
   selectedProvider = signal<AiProviderType>(this.aiService.activeProviderType());
   apiKey = signal('');
   customEndpoint = signal('');
+  testStatus = signal<TestStatus>('idle');
 
   hasStoredKey = computed(() => !!this.aiService.getApiKey(this.selectedProvider()));
   getStoredKey = () => this.aiService.getApiKey(this.selectedProvider());
+
+  canTest = computed(() => this.apiKey() && (this.selectedProvider() !== 'custom' || this.customEndpoint()));
+  canSave = computed(() => this.apiKey() && (this.selectedProvider() !== 'custom' || this.customEndpoint()));
+
 
   constructor() {
     this.onProviderChange(this.aiService.activeProviderType());
@@ -134,6 +163,38 @@ export class ApiKeyModalComponent {
     if (providerId === 'custom') {
       this.customEndpoint.set(this.aiService.getCustomEndpoint('custom'));
     }
+    this.testStatus.set('idle');
+  }
+
+  onApiKeyChange(value: string) {
+    this.apiKey.set(value);
+    this.testStatus.set('idle');
+  }
+
+  onEndpointChange(value: string) {
+    this.customEndpoint.set(value);
+    this.testStatus.set('idle');
+  }
+
+  testConnection() {
+    if (!this.canTest()) return;
+
+    this.testStatus.set('testing');
+    this.aiService.testClientConnection(this.selectedProvider(), this.apiKey(), this.customEndpoint())
+      .pipe(finalize(() => {
+        if (this.testStatus() === 'testing') {
+          // If the status hasn't been changed by the subscription, it means an error occurred.
+          this.testStatus.set('failed');
+        }
+      }))
+      .subscribe({
+        next: (result) => {
+          this.testStatus.set(result.success ? 'success' : 'failed');
+        },
+        error: () => {
+          this.testStatus.set('failed');
+        }
+      });
   }
 
   async saveApiKey() {
@@ -144,5 +205,6 @@ export class ApiKeyModalComponent {
   async deleteApiKey() {
     await this.aiService.deleteApiKey(this.selectedProvider());
     this.apiKey.set('');
+    this.testStatus.set('idle');
   }
 }

@@ -1,9 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, output, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AiService } from '../core/ai/ai.service';
 import { UiService } from '../core/services/ui.service';
 import { VisitorService } from '../core/services/visitor.service';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -42,37 +41,22 @@ import { finalize } from 'rxjs';
       </div>
       
       <div class="border-t border-slate-200 pt-5 space-y-3">
-          <div class="px-2 text-sm text-slate-500">
+          <div class="px-2 text-sm text-slate-500 space-y-1">
               <p>AI 服务: 
                   <span class="font-semibold" [class]="aiService.isConfigured() ? 'text-emerald-500' : 'text-amber-500'">
                     {{ aiService.getProviderName(aiService.activeProviderType()) }}
                     {{ aiService.isConfigured() ? '(已激活)' : '(未配置)' }}
                   </span>
               </p>
+              @if(visitorService.visitorCount(); as count) {
+                <p>访问人次: <span class="font-semibold text-slate-600">{{ count }}</span></p>
+              }
           </div>
           <button (click)="uiService.openApiKeyModal(); closeMenu.emit()" class="w-full text-sm text-center text-cyan-600 hover:text-cyan-700 transition-colors font-medium">
               配置 AI 服务
           </button>
-          <button (click)="testServerConnection()" 
-            class="w-full text-sm text-center text-slate-500 hover:text-cyan-600 transition-colors font-medium flex items-center justify-center h-8"
-            [disabled]="isTestingServer()">
-              @if(isTestingServer()) {
-                  <svg class="animate-spin h-5 w-5 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span class="ml-2">测试中...</span>
-              } @else {
-                  <span>测试服务器连接</span>
-              }
-          </button>
           <div class="text-center text-xs text-slate-400 pt-2">
-              @if (visitorService.visitorCount(); as count) {
-                <p class="mb-1">你是今日的第 <span class="font-bold text-cyan-600">{{ count }}</span> 位访客。</p>
-              } @else {
-                  <p class="mb-1 h-4 animate-pulse"><span class="bg-slate-200 rounded-md inline-block w-32 h-3"></span></p> 
-              }
-              <p>由 <span style="font-weight:bolder;">来福的鱼塘</span> 驱动</p>
+              <p class="mb-1">由 <span style="font-weight:bolder;">来福的鱼塘</span> 驱动</p>
               <p>（欢迎加我的公众号聊天）</p>
           </div>
       </div>
@@ -80,24 +64,13 @@ import { finalize } from 'rxjs';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   aiService = inject(AiService);
   uiService = inject(UiService);
   visitorService = inject(VisitorService);
   closeMenu = output();
 
-  isTestingServer = signal(false);
-
-  constructor() {
+  ngOnInit() {
     this.visitorService.fetchAndIncrementCount();
-  }
-
-  testServerConnection() {
-    if (this.isTestingServer()) return;
-    
-    this.isTestingServer.set(true);
-    this.aiService.testServerConnection().pipe(
-        finalize(() => this.isTestingServer.set(false))
-    ).subscribe();
   }
 }

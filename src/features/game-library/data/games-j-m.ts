@@ -13,6 +13,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Very Low",
     "category": "抽象策略",
     "mechanics": ["模式构建", "网格移动"],
+    "tags": ["strategy", "connection", "kids", "ancient", "solved_game"],
     "componentsDescription": "只需要一个3x3的网格，可以用纸和笔、在沙地上画，或使用任何代表X和O的两种不同物品。",
     "historicalStory": "井字棋的历史非常古老，其变体可以在古埃及、罗马帝国甚至更早的时期找到。1952年，世界上第一个电子游戏之一《OXO》诞生在英国剑bridge大学，它正是一个井字棋游戏。这使得井字棋不仅是人类最古老的游戏之一，也成为了计算机游戏历史的开创者。",
     "modificationSuggestion": {
@@ -51,6 +52,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Low",
     "category": "卡牌游戏",
     "mechanics": ["组合收集", "手牌管理"],
+    "tags": ["card_game", "combo", "hand_management", "rummy_family", "usa"],
     "componentsDescription": "一副标准的52张扑克牌。计分通常用纸笔完成。",
     "historicalStory": "金拉米于1909年在美国纽约发明，是“拉米”游戏家族的一个变体。它通过引入“敲牌”（knocking）机制，增加了更多的策略性，使得玩家可以控制一轮游戏的结束时机。它在20世纪40年代的好莱坞明星中非常流行，因此声名大噪。",
     "modificationSuggestion": {
@@ -89,6 +91,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Very High",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "棋子打入"],
+    "tags": ["strategy", "war", "capture", "drop_mechanic", "japan", "complex", "winter"],
     "componentsDescription": "一个9x9的无色棋盘，以及40个略呈五边形的木质棋子，棋子上的文字用以区分兵种。",
     "historicalStory": "将棋同样源自印度的“恰图兰卡”，经由中国传入日本。其独特的“打入”（持駒）规则被认为是在16世纪的日本战国时代形成的，这反映了当时战场上劝降和倒戈的现象。在日本，将棋不仅仅是游戏，更是一种“道”，顶尖的职业棋手享有崇高的社会地位。",
     "modificationSuggestion": {
@@ -127,6 +130,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "模式构建"],
+    "tags": ["strategy", "capture", "connection", "ancient", "roman"],
     "componentsDescription": "一个由三个同心正方形和连接它们的线组成的棋盘，共有24个交叉点或点。每位玩家有9个棋子。",
     "historicalStory": "九子棋的历史极其悠久，其棋盘图案在世界各地的古代遗迹中都有发现，包括埃及的库尔纳神庙（约公元前1400年）。它在中世纪的欧洲非常流行，莎士比亚的《仲夏夜之梦》中也曾提及此游戏。在许多中世纪的欧洲教堂里，都能在石凳上发现刻画的九子棋棋盘，表明它在当时社会的普及性。",
     "modificationSuggestion": {
@@ -165,6 +169,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["组合收集", "手牌管理", "团队合作"],
+    "tags": ["card_game", "combo", "partnership", "rummy_family", "south_america"],
     "componentsDescription": "两副标准的52张扑克牌，外加四张鬼牌（Joker），共108张牌。",
     "historicalStory": "卡纳斯塔（Canasta，西班牙语意为“篮子”）于1939年在乌拉圭发明。它在20世纪40年代风靡南美，并在50年代初期成为美国最受欢迎的纸牌游戏之一。在20世纪50年代的美国，卡纳斯塔引发了一场全国性的热潮，许多俱乐部和家庭都会定期举办卡纳斯塔派对，使其成为那个时代社交生活的重要组成部分。",
     "modificationSuggestion": {
@@ -203,6 +208,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["模式构建", "区域控制"],
+    "tags": ["strategy", "connection", "multiplayer", "modern"],
     "componentsDescription": "一个六边形的网格棋盘，以及四种颜色的棋子。",
     "historicalStory": "肯辛顿是一款现代抽象策略游戏，其灵感来源于经典的连接游戏，但通过允许多人参与和更复杂的获胜模式，增加了社交和策略的维度。它在多人抽象游戏领域是一个有趣的探索。",
     "modificationSuggestion": {
@@ -239,6 +245,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "强制吃子"],
+    "tags": ["strategy", "capture", "hawaii", "pacific"],
     "componentsDescription": "一个正方形或长方形的棋盘（如8x8），以及足够填满棋盘的黑白两色棋子（如卵石或玻璃珠）。",
     "historicalStory": "科纳内（Konane）是夏威夷的传统棋盘游戏，有时被称为“夏威夷跳棋”。在古代夏威夷，它是皇室成员和酋长们喜爱的智力游戏。传说中，一些重要的部落决策或领土争端，会通过一场科纳内对局来和平解决，胜者被认为得到了神的眷顾。",
     "modificationSuggestion": {
@@ -277,6 +284,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["组合收集", "手牌管理"],
+    "tags": ["card_game", "combo", "calculation", "unique_scoring", "england"],
     "componentsDescription": "一副标准的52张扑克牌和一个克里比奇计分板。计分板通常是木制的，上面有两排或多排小孔，玩家通过移动小木钉来记录分数。",
     "historicalStory": "克里比奇由17世纪的英国诗人约翰·萨克林爵士发明或推广。在美国海军的潜艇部队中，克里比奇有着特殊的传统。每个军官休息室里都有一个计分板，其中最古老的一个会随着潜艇的退役而传给下一艘最老的潜艇，见证了无数次深海航行。",
     "modificationSuggestion": {
@@ -315,6 +323,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "单人游戏",
     "mechanics": ["手牌管理", "模式构建"],
+    "tags": ["solitaire", "puzzle", "logic", "windows_classic"],
     "componentsDescription": "一副标准的52张扑克牌。",
     "historicalStory": "空当接龙的现代版本由Paul Alfille在1978年为柏拉图教育计算机系统编程实现。由于其几乎所有牌局都有解，它被认为比其他纸牌游戏更依赖技巧而非运气。与克朗代克一样，它也因被内置于微软Windows系统（从Windows 95开始）而闻名于世，成为风靡全球的“办公室摸鱼神器”。",
     "modificationSuggestion": {
@@ -353,6 +362,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "High",
     "category": "单人游戏",
     "mechanics": ["网格移动", "解谜"],
+    "tags": ["solitaire", "puzzle", "math", "chess_variant"],
     "componentsDescription": "一个标准的8x8国际象棋棋盘和一个骑士棋子。",
     "historicalStory": "骑士巡游问题最早由18世纪的数学家欧拉提出并进行了深入研究。它是一个经典的图论问题，在数学和计算机科学领域被广泛用于教学和算法演示。找到一个“闭巡游”（骑士的最后一步可以回到起点）是这个谜题的终极挑战。",
     "modificationSuggestion": {
@@ -389,6 +399,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "High",
     "category": "牌类游戏",
     "mechanics": ["组合收集", "模式构建"],
+    "tags": ["tiles", "combo", "calculation", "social", "china", "complex"],
     "componentsDescription": "一套标准的麻将包含144张牌，由“筒”、“条”、“万”三门序数牌，以及“东、南、西、北、中、发、白”七种字牌组成。此外，通常还包含花牌。配件还包括一对骰子和用于计分的筹码。",
     "historicalStory": "麻将起源于19世纪末的中国，可能由一种名为“马吊”的纸牌游戏演变而来。它在20世纪20年代被介绍到西方世界并迅速流行起来。一位名叫Joseph Babcock的美国商人将麻将规则简化并翻译成英文，出版了著名的“红皮书”，在美国乃至整个西方世界掀起了一场麻将狂热。",
     "modificationSuggestion": {
@@ -427,6 +438,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子"],
+    "tags": ["strategy", "capture", "war", "ancient", "roman"],
     "componentsDescription": "一个大小不定的网格棋盘（如8x8或8x12），以及两种颜色的棋子，其中一个为“Dux”（领导者）。",
     "historicalStory": "罗马棋（Ludus Latrunculorum）是古罗马最流行的策略游戏，其规则已失传，现代玩法是基于历史文献的重构。它被认为是模拟罗马军团的战术，强调阵型和包围。许多罗马作家都曾提及此游戏，它在罗马军营中尤其盛行。",
     "modificationSuggestion": {
@@ -463,6 +475,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "等级"],
+    "tags": ["strategy", "hierarchy", "capture", "china", "kids"],
     "componentsDescription": "一个7x9的棋盘，上面有河流、陷阱和兽穴等特殊地形。每位玩家8个棋子，代表不同等级的动物（象、狮、虎、豹、狼、狗、猫、鼠）。",
     "historicalStory": "斗兽棋起源于20世纪初的中国，是一款深受儿童喜爱的游戏。它通过简单直观的“大吃小”规则，生动地模拟了森林中的食物链。老鼠可以吃大象的独特规则，则为游戏增添了“以弱胜强”的趣味性和策略转折。",
     "modificationSuggestion": {
@@ -499,6 +512,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Very Low",
     "category": "博彩游戏",
     "mechanics": ["数字选择", "运气"],
+    "tags": ["gambling", "luck", "ancient", "china"],
     "componentsDescription": "一张有80个数字的卡片，以及用于开奖的摇奖机或随机数生成器。",
     "historicalStory": "基诺（Keno）被认为起源于古代中国，传说汉代曾用它来筹集资金修建长城。现代版本在19世纪由中国移民带到美国西部，并逐渐演变成赌场中的热门游戏。",
     "modificationSuggestion": {
@@ -534,6 +548,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "High",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子"],
+    "tags": ["strategy", "war", "capture", "korea", "chess_family"],
     "componentsDescription": "一个9x10的棋盘，没有“河界”。棋子是八角形的，大小不一，代表不同兵种。",
     "historicalStory": "韩国象棋（Janggi）源自中国象棋，但在几个世纪的演变中发展出了自己的特色。例如，炮不能翻山吃子，象可以走得更远，以及将（帅）可以在九宫内移动。这些规则的差异，使得韩国象棋拥有与中国象棋截然不同的战术风格。",
     "modificationSuggestion": {
@@ -570,6 +585,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["连接", "网格移动", "吃子"],
+    "tags": ["strategy", "connection", "unique_movement", "modern"],
     "componentsDescription": "一个8x8的棋盘，以及黑白两色棋子各12个。",
     "historicalStory": "来力士棋（Lines of Action）由Claude Soucie在20世纪60年代发明。它的核心机制非常独特：棋子移动的步数，由它所在直线上的棋子总数决定。这个简单的规则涌现出了高度动态和复杂的战局，使其在抽象游戏爱好者中备受推崇。",
     "modificationSuggestion": {
@@ -607,6 +623,7 @@ export const GAMES_J_M: Game[] = [
     "complexity": "High",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子"],
+    "tags": ["strategy", "war", "capture", "thailand", "chess_family", "ancient"],
     "componentsDescription": "一个8x8的无色棋盘，以及类似于国际象棋的棋子，但设计和名称具有泰国特色。",
     "historicalStory": "泰国象棋（Makruk）被许多历史学家认为是与国际象棋和将棋有共同祖先，且最接近古印度“恰图兰卡”形态的现代游戏。它的兵的升变规则（只能升变为“后”，且威力有限）和棋子的初始布局，都反映了更古老的游戏形态。在泰国，它是非常流行的民间游戏，尤其在老年人中。",
     "modificationSuggestion": {

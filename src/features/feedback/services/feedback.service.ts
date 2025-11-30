@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ToastService } from '../../../core/services/toast.service';
 import { catchError, tap, throwError, Observable } from 'rxjs';
@@ -26,10 +26,7 @@ export class FeedbackService {
   private http: HttpClient = inject(HttpClient);
   private toastService = inject(ToastService);
   
-  private webhookUrl = 'https://script.google.com/macros/s/AKfycbwghD1EpYuGmAHFty2gDHKGXJ0H4AEQ85KKB2EqO69SJEdh980yqqbVToZK4nItRwRV/exec';
-
-  // Define headers for all POST requests to avoid CORS preflight issues with Google Apps Script.
-  private postHeaders = new HttpHeaders({ 'Content-Type': 'text/plain' });
+  private webhookUrl = '/api/proxy-google-script';
 
   private handleError(operation: string) {
     return (error: unknown): Observable<never> => {
@@ -46,21 +43,21 @@ export class FeedbackService {
   }
 
   postMessage(message: NewMessage): Observable<any> {
-    return this.http.post(`${this.webhookUrl}?action=postMessage`, JSON.stringify(message), { headers: this.postHeaders }).pipe(
+    return this.http.post(`${this.webhookUrl}?action=postMessage`, message).pipe(
       tap(() => this.toastService.show('感谢您的留言！', 'success')),
       catchError(this.handleError('发送留言'))
     );
   }
 
   postReply(reply: NewReply): Observable<any> {
-    return this.http.post(`${this.webhookUrl}?action=postReply`, JSON.stringify(reply), { headers: this.postHeaders }).pipe(
+    return this.http.post(`${this.webhookUrl}?action=postReply`, reply).pipe(
       tap(() => this.toastService.show('回复已成功提交', 'success')),
       catchError(this.handleError('提交回复'))
     );
   }
 
   deleteMessage(id: string): Observable<any> {
-    return this.http.post(`${this.webhookUrl}?action=deleteMessage`, JSON.stringify({ id }), { headers: this.postHeaders }).pipe(
+    return this.http.post(`${this.webhookUrl}?action=deleteMessage`, { id }).pipe(
       tap(() => this.toastService.show('留言已删除', 'success')),
       catchError(this.handleError('删除留言'))
     );
@@ -72,16 +69,18 @@ export class FeedbackService {
       eventType, 
       eventData 
     };
-    return this.http.post(`${this.webhookUrl}?action=logAnalytics`, JSON.stringify(payload), { headers: this.postHeaders });
+    return this.http.post(`${this.webhookUrl}?action=logAnalytics`, payload).pipe(
+      catchError(err => {
+        console.error('Analytics log failed', err);
+        return throwError(() => err);
+      })
+    );
   }
 
   logInspirationIdea(idea: InspirationIdea): Observable<any> {
-    // This is a background task, so we just fire and forget.
-    // Errors will be logged to the console but won't bother the user.
-    return this.http.post(`${this.webhookUrl}?action=logIdea`, JSON.stringify(idea), { headers: this.postHeaders }).pipe(
+    return this.http.post(`${this.webhookUrl}?action=logIdea`, idea).pipe(
       catchError(error => {
         console.error('Failed to log inspiration idea', error);
-        // Return an empty observable to complete the stream without propagating the error
         return throwError(() => error);
       })
     );

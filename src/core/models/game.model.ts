@@ -32,6 +32,7 @@ export interface Game {
   rules: GameRules;
   aiAnalysis: AiAnalysis;
   variants: string[];
+  tags?: string[];
 }
 
 export interface AiAnalysis {

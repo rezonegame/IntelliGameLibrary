@@ -13,6 +13,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "卡牌游戏",
     "mechanics": ["运气"],
+    "tags": ["card_game", "luck", "kids", "classic"],
     "componentsDescription": "一副标准的52张扑克牌。",
     "historicalStory": "这是一个非常古老的英国纸牌游戏，规则简单，完全依赖运气，因此非常适合儿童。它的名字生动地描绘了游戏的本质：一个玩家的财富（牌）会迅速转移到另一个玩家手中，就像邻居之间的贫富变化一样。",
     "modificationSuggestion": {
@@ -48,6 +49,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "竞赛游戏",
     "mechanics": ["掷骰", "竞赛", "阻挡"],
+    "tags": ["race", "blockade", "dice", "german_style"],
     "componentsDescription": "一个特殊的棋盘，上面有通往终点的路径；每位玩家5个棋子；11个中立的“路障”棋子；以及一个六面骰。",
     "historicalStory": "障碍棋（Malefiz）由德国人Werner Schöppner在1959年设计，是“掷骰前进”类游戏的一个重要创新。它引入了玩家可以主动放置障碍物来阻碍所有人的机制，这为纯粹的竞赛游戏增加了深刻的互动和破坏性乐趣，使其成为德式家庭游戏的经典之作。",
     "modificationSuggestion": {
@@ -85,6 +87,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["吃墩", "组合收集", "手牌管理"],
+    "tags": ["card_game", "trick_taking", "combo", "classic", "france"],
     "componentsDescription": "两副32张的牌库（7到A），共64张牌。",
     "historicalStory": "贝齐克在19世纪的法国非常流行，据说拿破仑也是其爱好者。温斯顿·丘吉尔也是一位著名的贝齐克玩家，他认为这款游戏能够锻炼人的记忆力和决策能力。它被认为是匹诺克的前身。",
     "modificationSuggestion": {
@@ -121,6 +124,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["区域控制", "吃子"],
+    "tags": ["ancient", "sowing", "spring", "harvest", "calculation", "africa"],
     "componentsDescription": "一个由两排小坑组成的棋盘，两端各有一个大坑作为计分区。最常见的“卡拉哈”（Kalah）变体使用两排各六个小坑。游戏棋子是48颗小石头、种子或玻璃珠。",
     "historicalStory": "播棋（Mancala）是人类最古老的游戏家族之一，其历史可追溯到数千年前。考古证据表明，类似的棋盘在古代非洲和中东广泛存在，最早可能出现在公元6-7世纪的埃塞不比亚。在许多非洲文化中，播棋不仅仅是一种游戏，更是一种社交活动和教育工具。长者们通过播棋来教导孩子们计数、计划和资源管理。游戏的节奏，如同播种与收获，也蕴含着深刻的生命周期哲理。",
     "modificationSuggestion": {
@@ -159,6 +163,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["连接", "区域控制"],
+    "tags": ["connection", "strategy", "modern"],
     "componentsDescription": "一个正方形网格棋盘，棋盘的格点被涂成两种颜色。以及两种颜色的棋子。",
     "historicalStory": "搭桥游戏是2000年由Larry Black设计的一款现代连接游戏，它是对“海克斯棋”这类经典连接游戏的简化和变体。其核心机制在于，玩家只能在自己颜色的格点上放置棋子，这为简单的连接目标增加了有趣的限制和策略。",
     "modificationSuggestion": {
@@ -196,6 +201,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "骰子游戏",
     "mechanics": ["掷骰", "叫价", "吹牛", "玩家淘汰"],
+    "tags": ["dice", "bluffing", "social", "party", "south_america"],
     "componentsDescription": "每位玩家需要5个标准的六面骰和一个用于隐藏骰子点数的骰盅。骰盅通常是一个不透明的杯子。",
     "historicalStory": "吹牛骰子是一类游戏的统称，其历史悠久且难以精确追溯。它的起源可能与南美洲的古老骰子游戏有关，例如“Dudo”或“Cacho”。据说，西班牙征服者皮萨罗和他的手下在囚禁印加皇帝阿塔瓦尔帕期间，曾与这位皇帝玩一种名为“Dudo”的游戏，这正是吹牛骰子的前身。这个故事为这款充满欺骗与猜测的游戏，增添了一抹历史的传奇色彩。",
     "modificationSuggestion": {
@@ -234,6 +240,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "模式构建"],
+    "tags": ["strategy", "capture", "nigeria", "africa"],
     "componentsDescription": "一个5x6或6x7的方格棋盘。每位玩家有12个棋子。",
     "historicalStory": "达拉（Dara）是尼日利亚达卡卡里人的传统游戏。在达卡卡里文化中，达拉游戏通常在收获季节或庆祝活动中进行，是社区交流的重要方式。棋盘可以直接在沙地上画出，用石头和种子作为棋子，体现了其源于生活的质朴本质。",
     "modificationSuggestion": {
@@ -272,6 +279,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["吹牛", "下注", "组合收集"],
+    "tags": ["card_game", "bluffing", "gambling", "social", "usa"],
     "componentsDescription": "一副标准的52张扑克牌和一套用于下注的筹码。在正式场合，还需要一个“庄家按钮”（dealer button）来指示当前轮次的庄家位置。",
     "historicalStory": "扑克游戏本身起源于19世纪初的美国，德州扑克则被认为是在20世纪初的德克萨斯州罗布斯敦诞生的。2003年，一位名叫克里斯· Moneymaker 的业余玩家通过线上资格赛赢得了世界扑克系列赛的主赛事冠军，这个“灰姑娘”般的故事点燃了全球的扑克热潮，被称为“Moneymaker效应”，彻底改变了扑克世界的格局。",
     "modificationSuggestion": {
@@ -310,6 +318,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "牌块游戏",
     "mechanics": ["牌块放置", "手牌管理"],
+    "tags": ["tiles", "matching", "classic", "china"],
     "componentsDescription": "一套标准的多米诺骨牌由28个长方形牌块组成，每个牌块被一条线分为两半，两半上分别刻有0到6个点。",
     "historicalStory": "多米诺骨牌最早于12世纪的中国宋代出现，当时被称为“骨牌”。现代西方的28张多米诺骨牌则是在18世纪的意大利首次出现。除了作为游戏，多米诺骨牌还因“多米诺效应”而闻名于世。人们用骨牌排列成壮观的长龙，推倒第一张，后续的骨牌便会依次倒下，形成令人惊叹的连锁反应。",
     "modificationSuggestion": {
@@ -348,6 +357,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["模式构建", "不对称"],
+    "tags": ["strategy", "asymmetric", "modern", "science"],
     "componentsDescription": "一个7x7的棋盘，以及49个棋子，每面颜色不同（例如黑与白）。",
     "historicalStory": "熵（Entropy）由Eric Solomon在1977年设计，是一款非常独特的不对称目标游戏。一个玩家（有序）试图将棋子排列成同色区域，而另一个玩家（无序）则试图最大化地混合颜色。游戏的名字来源于热力学第二定律，巧妙地将科学概念游戏化。",
     "modificationSuggestion": {
@@ -385,6 +395,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Medium",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子"],
+    "tags": ["strategy", "capture", "madagascar", "unique_capture"],
     "componentsDescription": "一个带有对角线的网格棋盘（通常为9x5），与西非跳棋的棋盘类似。每位玩家有22个棋子。",
     "historicalStory": "法诺罗纳是马达加斯加的国粹游戏，其独特的“接近”和“后退”吃子机制是核心创新。在马达加斯加，它与占星术和占卜紧密相连，人们相信游戏的结果可以预示未来。在重要的决策之前，当地人有时会通过一局法诺罗纳来寻求启示。",
     "modificationSuggestion": {
@@ -423,6 +434,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "骰子游戏",
     "mechanics": ["掷骰", "博运气", "组合收集"],
+    "tags": ["dice", "luck", "push_your_luck", "party"],
     "componentsDescription": "六个标准的六面骰，以及用于计分的纸和笔。",
     "historicalStory": "法克尔（Farkle）这类掷骰得分游戏的起源非常古老，可以追溯到几个世纪前。现代版本在20世纪中期开始流行。它的核心在于“博运气”（push your luck）机制，即在“见好就收”和“贪心不足”之间做出选择，这种简单而刺激的抉择使其成为家庭和酒吧聚会的常青树。",
     "modificationSuggestion": {
@@ -459,6 +471,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "竞赛游戏",
     "mechanics": ["掷骰", "网格移动", "吃子"],
+    "tags": ["race", "dice", "kids", "classic", "india"],
     "componentsDescription": "一个十字形的棋盘，每个臂上有三列方格，并有四个不同颜色的“停机坪”和通往中心的“大本营”路径。配件包括16个棋子（每种颜色4个）和一个六面骰。",
     "historicalStory": "飞行棋是古代印度游戏“十字戏”（Pachisi）的简化西方版本，英国人在1896年为其申请了专利。它的棋盘设计象征着一个带有庭院的宫殿，棋子们从各自的角落出发，围绕“世界”一圈，最终回归中心的“家园”。这个简单的竞赛游戏，实际上蕴含着一场微缩的生命之旅。",
     "modificationSuggestion": {
@@ -497,6 +510,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["模式构建", "网格移动"],
+    "tags": ["strategy", "connection", "africa"],
     "componentsDescription": "一个由33个点组成的菱形棋盘。每位玩家有12个棋子。",
     "historicalStory": "贝莱贝莱棋是非洲多个地区流传的传统游戏，其菱形棋盘和四子连线的目标，使其成为“连珠”游戏家族中一个独特的分支。它通常在沙地上用石头或种子进行，是社区成员在闲暇时进行社交和智力挑战的方式。",
     "modificationSuggestion": {
@@ -535,6 +549,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子", "不对称"],
+    "tags": ["strategy", "asymmetric", "hunt", "south_america"],
     "componentsDescription": "一个带有对角线的小型棋盘，由一个中心点和两个同心三角形组成。一个“美洲虎”棋子和大约12个“狗”棋子。",
     "historicalStory": "博罗罗棋是南美洲原住民博罗罗人的传统狩猎游戏。它反映了当地生态环境中力量（美洲虎）与数量（狗群）的对抗，是部落文化和世界观的一种体现。",
     "modificationSuggestion": {
@@ -573,6 +588,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "竞赛游戏",
     "mechanics": ["掷骰", "竞赛", "吃子"],
+    "tags": ["race", "dice", "uzbekistan", "central_asia"],
     "componentsDescription": "一个7x7的棋盘，其中一些格子有特殊标记。每位玩家5个棋子，以及两个六面骰。",
     "historicalStory": "博什棋是中亚地区，特别是乌兹别克斯坦流传的一种传统竞赛游戏。它被认为是丝绸之路上文化交流的产物，融合了中东双陆棋和印度十字戏的一些元素。",
     "modificationSuggestion": {
@@ -611,6 +627,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "骰子游戏",
     "mechanics": ["掷骰", "团队合作"],
+    "tags": ["dice", "luck", "social", "party"],
     "componentsDescription": "每张桌子需要三个六面骰，以及用于计分的纸笔和一个铃。",
     "historicalStory": "盘客（Bunco）是一种19世纪起源于英国的 parlour game。它在美国西部大开发时期演变成一种赌博骗局，但在20世纪80年代作为一种轻松的社交活动而复兴，尤其在女性团体中广受欢迎。现代的盘客派对强调的是社交互动，而非输赢。",
     "modificationSuggestion": {
@@ -647,6 +664,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "技巧游戏",
     "mechanics": ["弹射", "技巧"],
+    "tags": ["dexterity", "flicking", "india", "billiards"],
     "componentsDescription": "一个方形的木制棋盘，四角有袋孔；9个白色棋子，9个黑色棋子，1个红色的“后”；以及一个稍大稍重的“冲击子”。通常会使用滑石粉来减少摩擦。",
     "historicalStory": "卡罗姆（Carrom）被认为起源于印度次大陆，是南亚和中东地区非常流行的家庭游戏。它的玩法类似于台球，但直接用手指弹射，对场地和设备要求更低，因此在民间广为流传。国际卡罗姆联合会成立于1988年，定期举办世界锦标赛。",
     "modificationSuggestion": {
@@ -683,6 +701,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "技巧游戏",
     "mechanics": ["弹射", "技巧"],
+    "tags": ["dexterity", "flicking", "canada", "summer"],
     "componentsDescription": "一个圆形的木制棋盘，中央有一个凹陷的小孔，周围有三圈得分区和一些起阻挡作用的木钉。",
     "historicalStory": "加拿大棋（Crokinole）于1876年在加拿大安大略省发明，是加拿大最具代表性的传统桌面游戏。它的名字可能来源于法语“croquignole”，意为“小饼干”或“弹指”。每年，世界加拿大棋锦標赛都会在安大略省的塔维斯托克举行，吸引了来自世界各地的爱好者。",
     "modificationSuggestion": {
@@ -719,6 +738,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "竞赛"],
+    "tags": ["strategy", "race", "korea"],
     "componentsDescription": "一个5x5的棋盘，以及两种颜色的棋子若干，足以填满棋盘。",
     "historicalStory": "五方棋（Five Field Kono）是韩国众多小型传统棋类游戏（统称为Kono）之一。这类游戏通常规则简单，棋盘小巧，易于上手，是韩国民间流传甚广的消遣方式。它的目标不是吃子，而是纯粹的位置交换，如同两军对垒，看谁能先占领对方的阵地。",
     "modificationSuggestion": {
@@ -756,6 +776,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "吃子 (围困)"],
+    "tags": ["strategy", "capture", "korea"],
     "componentsDescription": "一个4x4的棋盘，每位玩家8个棋子。",
     "historicalStory": "四方棋是韩国Kono游戏家族的另一个成员。与五方棋不同，它的目标是围困而非换位。这种通过包围来“吃掉”对手的机制，在许多古老的棋类游戏中都有体现，反映了古代战争中围城和切断补给线的战术思想。",
     "modificationSuggestion": {
@@ -793,6 +814,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Medium",
     "category": "卡牌游戏",
     "mechanics": ["吃墩", "叫牌", "团队合作"],
+    "tags": ["card_game", "trick_taking", "partnership", "usa"],
     "componentsDescription": "一副24或32张的扑克牌（通常只使用9、10、J、Q、K、A）。",
     "historicalStory": "尤克牌（Euchre）被认为是19世纪初由德国移民带到美国的，源自一种名为“Juckerspiel”的阿尔萨斯游戏。它在美国中西部地区尤其流行，被认为是现代桥牌和黑桃A等许多吃墩游戏的祖先。Joker（鬼牌）最早就是为了尤克牌而发明的，作为最强的王牌。",
     "modificationSuggestion": {
@@ -829,6 +851,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Low",
     "category": "抽象策略",
     "mechanics": ["网格移动", "竞赛"],
+    "tags": ["strategy", "race", "multiplayer", "german_style"],
     "componentsDescription": "一个星形的棋盘，以及六组不同颜色的棋子，每组10个。",
     "historicalStory": "尽管名字里有“中国”，但中国跳棋与中国无关，也并非跳棋的变体。它是在1892年的德国发明的，是对美国游戏“跳棋”（Halma）的改造，将其从方形棋盘移植到了星形棋盘上。最初的名字是“Stern-Halma”（星形跳棋），“中国跳棋”这个名字是1928年美国一家公司为了营销而取的，意在营造一种“异国情调”。",
     "modificationSuggestion": {
@@ -867,6 +890,7 @@ export const GAMES_B_F: Game[] = [
     "complexity": "Very Low",
     "category": "骰子游戏",
     "mechanics": ["掷骰", "竞赛"],
+    "tags": ["dice", "luck", "sports", "simulation", "summer"],
     "componentsDescription": "两个六面骰，以及一张纸和一支笔来记录“球场”位置和得分。",
     "historicalStory": "骰子足球是无数桌面模拟体育游戏的缩影。这类游戏在没有电子游戏的时代非常流行，用最简单的工具（骰子、纸笔）来模拟复杂体育比赛的紧张感和随机性。它体现了人们将现实世界游戏化的创造力。",
     "modificationSuggestion": {
