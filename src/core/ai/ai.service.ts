@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../services/toast.service';
 import { AiProvider, AiProviderType, AI_PROVIDERS } from './ai-provider.interface';
 import { GeminiProvider } from './providers/gemini.provider';
@@ -6,6 +7,7 @@ import { OpenAIProvider } from './providers/openai.provider';
 import { DeepSeekProvider } from './providers/deepseek.provider';
 import { ClaudeProvider } from './providers/claude.provider';
 import { UiService } from '../services/ui.service';
+import { Observable, catchError, map, of } from 'rxjs';
 
 const API_KEYS_STORAGE_ITEM = 'ai-api-keys';
 const CUSTOM_ENDPOINTS_STORAGE_ITEM = 'ai-custom-endpoints';
@@ -13,6 +15,7 @@ const ACTIVE_PROVIDER_STORAGE_ITEM = 'ai-active-provider';
 
 @Injectable({ providedIn: 'root' })
 export class AiService {
+  private http = inject(HttpClient);
   private toastService = inject(ToastService);
   private uiService = inject(UiService);
   private geminiProvider = inject(GeminiProvider);
@@ -180,5 +183,18 @@ export class AiService {
 
   simulateRuleChange(...args: Parameters<AiProvider['simulateRuleChange']>) {
     return this.execute(p => p.simulateRuleChange(...args));
+  }
+
+  generateDailyFocusReason(gameName: string): Observable<string> {
+    // This method now calls our own secure Vercel function instead of the AI provider directly.
+    return this.http.post<{ reason: string }>('/api/generate-daily-reason', JSON.stringify({ gameName }))
+      .pipe(
+        map(response => response.reason),
+        catchError(error => {
+          console.error('Failed to generate daily focus reason via proxy', error);
+          this.toastService.show('获取每日推荐语失败', 'error');
+          return of('今天，就让这款经典游戏带你重温最纯粹的快乐吧！'); // Return a fallback
+        })
+      );
   }
 }

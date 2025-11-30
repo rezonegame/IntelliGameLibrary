@@ -22,4 +22,6 @@ export interface AiProvider {
   remodelTheme(gameName: string, newTheme: string): Promise<any>;
 
   simulateRuleChange(gameName: string, ruleChange: string): Promise<any>;
+
+  generateDailyFocusReason(gameName: string): Promise<string>;
 }

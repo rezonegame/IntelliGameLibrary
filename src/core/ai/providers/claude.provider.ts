@@ -26,7 +26,7 @@ export class ClaudeProvider implements AiProvider {
     return { system: '你是一位游戏设计专家，请以简体中文JSON格式回应。', user: prompt };
   }
   
-  private async generateContent(prompt: string): Promise<any> {
+  private async generateContent(prompt: string, isJson: boolean = true): Promise<any> {
     if (!this.apiKey) {
       throw new Error('Claude Provider has no API Key.');
     }
@@ -61,14 +61,17 @@ export class ClaudeProvider implements AiProvider {
       const data = await response.json();
       const content = data.content[0]?.text?.trim() || '';
 
-      if (content) {
-        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/);
-        const jsonString = jsonMatch ? jsonMatch[1] : content;
-        return JSON.parse(jsonString);
-      } else {
-        this.toastService.show('AI 返回了空的响应，无法解析', 'error');
-        throw new Error('AI returned an empty response for a JSON request.');
+      if (isJson) {
+        if (content) {
+            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/);
+            const jsonString = jsonMatch ? jsonMatch[1] : content;
+            return JSON.parse(jsonString);
+        } else {
+            this.toastService.show('AI 返回了空的响应，无法解析', 'error');
+            throw new Error('AI returned an empty response for a JSON request.');
+        }
       }
+      return content;
 
     } catch (error: any) {
       console.error('Claude Fetch Error:', error);
@@ -97,5 +100,10 @@ export class ClaudeProvider implements AiProvider {
   async simulateRuleChange(gameName: string, ruleChange: string): Promise<any> {
     const prompt = `你是一位资深游戏设计分析师。对于游戏“${gameName}”，请分析这条规则变更带来的影响：“${ruleChange}”。请以 JSON 格式回应，所有字符串值都必须是简体中文，且 JSON 结构必须为：{"impactOnStrategy": "对策略深度的影响", "impactOnBalance": "对游戏平衡性的影响", "impactOnPacing": "对游戏节奏的影响", "impactOnPlayerExperience": "对玩家体验的影响", "overallConclusion": "综合结论"}。`;
     return this.generateContent(prompt);
+  }
+
+  async generateDailyFocusReason(gameName: string): Promise<string> {
+    const prompt = `你是一位充满激情的游戏推荐官。请为游戏《${gameName}》写一句富有创意、能激发人兴趣的推荐语，用于“今日聚焦”栏目。请直接返回这句推荐语，不要包含任何额外的前缀或解释。语言风格要生动、简洁、引人入胜。`;
+    return this.generateContent(prompt, false);
   }
 }

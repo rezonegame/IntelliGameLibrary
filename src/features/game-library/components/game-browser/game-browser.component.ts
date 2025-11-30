@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { GameCardSkeletonComponent } from '../game-card-skeleton/game-card-skeleton.component';
 import { UiService } from '../../../../core/services/ui.service';
+import { AiService } from '../../../../core/ai/ai.service';
 
 @Component({
   selector: 'app-game-browser',
@@ -20,12 +21,25 @@ import { UiService } from '../../../../core/services/ui.service';
       @if (todayFocusGame(); as game) {
         <div class="mb-10">
           <h2 class="text-2xl font-bold text-slate-800 mb-4">今日聚焦</h2>
-          <div class="bg-gradient-to-r from-cyan-50 to-sky-100 p-6 rounded-xl shadow-sm border border-cyan-200/50 flex flex-col md:flex-row items-center gap-6 cursor-pointer" (click)="selectGame(game)">
-            <img [src]="game.image" [alt]="game.name" class="w-full md:w-1/3 h-48 object-cover rounded-lg shadow-md border-2 border-white">
+          <div class="bg-gradient-to-br from-cyan-50 via-white to-sky-100 p-6 rounded-xl shadow-sm border border-cyan-200/50 flex flex-col md:flex-row items-center gap-8">
+            <img [src]="game.image" [alt]="game.name" 
+              class="w-full md:w-48 h-48 object-cover rounded-lg shadow-md border-2 border-white cursor-pointer transition-transform hover:scale-105" 
+              (click)="selectGame(game)">
             <div class="flex-1">
-              <p class="text-sm font-semibold text-cyan-600">{{ game.category }}</p>
-              <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ game.name }}</h3>
-              <p class="text-slate-600 mt-2 text-base leading-relaxed h-20 overflow-hidden">{{ game.description }}</p>
+              <p class="text-sm font-semibold text-cyan-600 cursor-pointer" (click)="selectGame(game)">{{ game.category }}</p>
+              <h3 class="text-3xl font-bold text-slate-800 mt-1 cursor-pointer" (click)="selectGame(game)">{{ game.name }}</h3>
+              
+              <div class="mt-3 text-base text-slate-600 italic border-l-4 border-cyan-200 pl-4 py-2 min-h-[5rem]">
+                @if (dailyFocusReasonIsLoading()) {
+                  <div class="space-y-2 animate-pulse">
+                    <div class="h-4 bg-slate-200 rounded w-full"></div>
+                    <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+                  </div>
+                } @else {
+                  <p>"{{ dailyFocusReason() }}"</p>
+                }
+              </div>
+
               <div class="mt-4 flex flex-wrap gap-2 text-xs">
                 <span class="bg-white/70 px-2 py-1 rounded-full text-slate-700 font-medium">{{ game.players.min }}-{{ game.players.max }} 人</span>
                 <span class="bg-white/70 px-2 py-1 rounded-full text-slate-700 font-medium">{{ game.playTime.min }}-{{ game.playTime.max }} 分钟</span>
@@ -152,6 +166,7 @@ export class GameBrowserComponent {
   gameService = inject(GameService);
   analyticsService = inject(AnalyticsService);
   uiService = inject(UiService);
+  aiService = inject(AiService);
   selectedGame = signal<Game | null>(null);
 
   // Filter state
@@ -163,6 +178,8 @@ export class GameBrowserComponent {
 
   // UX signals
   todayFocusGame = signal<Game | null>(null);
+  dailyFocusReason = signal<string>('');
+  dailyFocusReasonIsLoading = signal(true);
   remodelSuggestion = signal<{ game: Game, theme: string } | null>(null);
   simulationSuggestion = signal<{ game: Game, mechanic: string } | null>(null);
   
@@ -215,32 +232,7 @@ export class GameBrowserComponent {
   });
 
   constructor() {
-    // Select today's focus game
-    const today = new Date().toISOString().split('T')[0];
-    const games = this.gameService.games();
-    if (games.length > 0) {
-      // Simple pseudo-random selection based on date, stable for the day
-      const index = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % games.length;
-      this.todayFocusGame.set(games[index]);
-    }
-
-    afterNextRender(() => {
-      untracked(() => {
-        const game = this.todayFocusGame();
-        if (game) {
-          const randomTheme = this.randomThemes[Math.floor(Math.random() * this.randomThemes.length)];
-          this.remodelSuggestion.set({ game, theme: randomTheme });
-
-          const mechanics = this.allMechanics();
-          if (mechanics.length > 0) {
-            const gameMechanics = new Set(game.mechanics);
-            const potentialMechanics = mechanics.filter(m => !gameMechanics.has(m));
-            let randomMechanic = (potentialMechanics.length > 0 ? potentialMechanics : mechanics)[Math.floor(Math.random() * (potentialMechanics.length > 0 ? potentialMechanics.length : mechanics.length))];
-            this.simulationSuggestion.set({ game, mechanic: randomMechanic });
-          }
-        }
-      });
-    });
+    this.initializeTodayFocus();
 
     // Effect to handle opening detail modal from an external request (e.g., shared link)
     effect(() => {
@@ -267,6 +259,62 @@ export class GameBrowserComponent {
       }, 400);
 
       onCleanup(() => clearTimeout(timer));
+    });
+  }
+
+  private initializeTodayFocus() {
+    const today = new Date().toISOString().split('T')[0];
+    const games = this.gameService.games();
+    if (games.length === 0) return;
+
+    // Stable selection based on date
+    const index = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % games.length;
+    const game = games[index];
+    this.todayFocusGame.set(game);
+    
+    // Generate AI suggestions
+    this.generateInspirationSuggestions(game);
+    
+    // Fetch or get cached AI daily reason
+    this.getDailyFocusReason(game, today);
+  }
+
+  private getDailyFocusReason(game: Game, today: string) {
+    const cacheKey = `daily-focus-reason-${today}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+      const { gameId, reason } = JSON.parse(cachedData);
+      // Ensure cache is for the correct game of the day
+      if (gameId === game.id) {
+        this.dailyFocusReason.set(reason);
+        this.dailyFocusReasonIsLoading.set(false);
+        return;
+      }
+    }
+    
+    // If no valid cache, fetch from AI
+    this.dailyFocusReasonIsLoading.set(true);
+    this.aiService.generateDailyFocusReason(game.name).subscribe(reason => {
+        this.dailyFocusReason.set(reason);
+        localStorage.setItem(cacheKey, JSON.stringify({ gameId: game.id, reason }));
+        this.dailyFocusReasonIsLoading.set(false);
+    });
+  }
+
+  private generateInspirationSuggestions(game: Game) {
+    afterNextRender(() => {
+      untracked(() => {
+        const randomTheme = this.randomThemes[Math.floor(Math.random() * this.randomThemes.length)];
+        this.remodelSuggestion.set({ game, theme: randomTheme });
+
+        const mechanics = this.allMechanics();
+        if (mechanics.length > 0) {
+          const gameMechanics = new Set(game.mechanics);
+          const potentialMechanics = mechanics.filter(m => !gameMechanics.has(m));
+          let randomMechanic = (potentialMechanics.length > 0 ? potentialMechanics : mechanics)[Math.floor(Math.random() * (potentialMechanics.length > 0 ? potentialMechanics.length : mechanics.length))];
+          this.simulationSuggestion.set({ game, mechanic: randomMechanic });
+        }
+      });
     });
   }
 

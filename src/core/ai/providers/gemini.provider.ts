@@ -164,4 +164,9 @@ export class GeminiProvider implements AiProvider {
     };
     return this.generateContent(prompt, schema);
   }
+
+  async generateDailyFocusReason(gameName: string): Promise<string> {
+    const prompt = `你是一位充满激情的游戏推荐官。请为游戏《${gameName}》写一句富有创意、能激发人兴趣的推荐语，用于“今日聚焦”栏目。请直接返回这句推荐语，不要包含任何额外的前缀或解释。语言风格要生动、简洁、引人入胜。`;
+    return this.generateContent(prompt);
+  }
 }
