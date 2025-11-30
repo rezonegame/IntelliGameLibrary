@@ -7,6 +7,7 @@ export type InspirationType = 'remodel' | 'simulate';
 export interface InspirationContext {
   game: Game;
   type: InspirationType;
+  suggestion?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -36,8 +37,8 @@ export class UiService {
     this.isApiKeyModalOpen.set(false);
   }
 
-  requestInspiration(game: Game, type: InspirationType) {
-    this.inspirationContext.set({ game, type });
+  requestInspiration(game: Game, type: InspirationType, suggestion?: string) {
+    this.inspirationContext.set({ game, type, suggestion });
     this.currentView.set('workshop');
   }
 }

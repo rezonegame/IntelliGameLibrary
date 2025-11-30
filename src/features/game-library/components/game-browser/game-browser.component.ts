@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, effect, untracked } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, effect, untracked, afterNextRender } from '@angular/core';
 import { Game } from '../../../../core/models/game.model';
 import { GameService } from '../../services/game.service';
 import { GameCardComponent } from '../game-card/game-card.component';
@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { GameCardSkeletonComponent } from '../game-card-skeleton/game-card-skeleton.component';
+import { UiService } from '../../../../core/services/ui.service';
 
 @Component({
   selector: 'app-game-browser',
@@ -32,6 +33,23 @@ import { GameCardSkeletonComponent } from '../game-card-skeleton/game-card-skele
               </div>
             </div>
           </div>
+
+           <!-- AI Inspiration Quick-links -->
+          @if(remodelSuggestion(); as remodel) {
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button (click)="requestInspiration('remodel')" class="text-left p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-colors group">
+                <h4 class="font-semibold text-slate-800 group-hover:text-cyan-700">改造此游戏主题</h4>
+                <p class="text-sm text-slate-500 mt-1">将《{{ remodel.game.name }}》代入“{{ remodel.theme }}”主题会怎么样？</p>
+              </button>
+              @if(simulationSuggestion(); as simulation) {
+                <button (click)="requestInspiration('simulate')" class="text-left p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-colors group">
+                  <h4 class="font-semibold text-slate-800 group-hover:text-cyan-700">模拟规则变更</h4>
+                  <p class="text-sm text-slate-500 mt-1">为《{{ simulation.game.name }}》引入“{{ simulation.mechanic }}”机制会怎么样？</p>
+                </button>
+              }
+            </div>
+          }
+
         </div>
       }
 
@@ -133,6 +151,7 @@ import { GameCardSkeletonComponent } from '../game-card-skeleton/game-card-skele
 export class GameBrowserComponent {
   gameService = inject(GameService);
   analyticsService = inject(AnalyticsService);
+  uiService = inject(UiService);
   selectedGame = signal<Game | null>(null);
 
   // Filter state
@@ -144,7 +163,11 @@ export class GameBrowserComponent {
 
   // UX signals
   todayFocusGame = signal<Game | null>(null);
+  remodelSuggestion = signal<{ game: Game, theme: string } | null>(null);
+  simulationSuggestion = signal<{ game: Game, mechanic: string } | null>(null);
   
+  private randomThemes = ['赛博朋克', '深海探险', '古埃及神话', '太空歌剧', '丧尸末日', '蒸汽朋克', '美食王国'];
+
   complexityLevels = [
     { value: 'Very Low', display: '非常低' },
     { value: 'Low', display: '低' },
@@ -154,6 +177,7 @@ export class GameBrowserComponent {
   ];
   
   categories = computed(() => [...new Set(this.gameService.games().map(g => g.category))].sort((a: string, b: string) => a.localeCompare(b, 'zh-Hans-CN')));
+  allMechanics = computed(() => [...new Set(this.gameService.games().flatMap(g => g.mechanics))]);
   
   hasActiveFilters = computed(() => {
     return this.searchTerm() !== '' || this.playersFilter() !== null || this.complexityFilter() !== 'all' || this.categoryFilter() !== 'all';
@@ -200,6 +224,24 @@ export class GameBrowserComponent {
       this.todayFocusGame.set(games[index]);
     }
 
+    afterNextRender(() => {
+      untracked(() => {
+        const game = this.todayFocusGame();
+        if (game) {
+          const randomTheme = this.randomThemes[Math.floor(Math.random() * this.randomThemes.length)];
+          this.remodelSuggestion.set({ game, theme: randomTheme });
+
+          const mechanics = this.allMechanics();
+          if (mechanics.length > 0) {
+            const gameMechanics = new Set(game.mechanics);
+            const potentialMechanics = mechanics.filter(m => !gameMechanics.has(m));
+            let randomMechanic = (potentialMechanics.length > 0 ? potentialMechanics : mechanics)[Math.floor(Math.random() * (potentialMechanics.length > 0 ? potentialMechanics.length : mechanics.length))];
+            this.simulationSuggestion.set({ game, mechanic: randomMechanic });
+          }
+        }
+      });
+    });
+
     // Effect to handle opening detail modal from an external request (e.g., shared link)
     effect(() => {
       const gameToOpen = this.gameService.openGameDetails();
@@ -226,6 +268,21 @@ export class GameBrowserComponent {
 
       onCleanup(() => clearTimeout(timer));
     });
+  }
+
+  requestInspiration(type: 'remodel' | 'simulate') {
+    if (type === 'remodel') {
+      const suggestion = this.remodelSuggestion();
+      if (suggestion) {
+        this.uiService.requestInspiration(suggestion.game, 'remodel', suggestion.theme);
+      }
+    } else {
+      const suggestion = this.simulationSuggestion();
+      if (suggestion) {
+        const ruleText = `引入“${suggestion.mechanic}”机制`;
+        this.uiService.requestInspiration(suggestion.game, 'simulate', ruleText);
+      }
+    }
   }
 
   selectGame(game: Game) {

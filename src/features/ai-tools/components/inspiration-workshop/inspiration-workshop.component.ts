@@ -196,11 +196,11 @@ export class InspirationWorkshopComponent {
         if (context.type === 'remodel') {
           this.activeTab.set('主题改造');
           this.remodelGame.set(context.game.name);
-          this.remodelTheme.set(''); // Clear theme for user input
+          this.remodelTheme.set(context.suggestion || ''); // Pre-fill theme
         } else if (context.type === 'simulate') {
           this.activeTab.set('“假如”模拟器');
           this.whatIfGame.set(context.game.name);
-          this.whatIfRule.set(''); // Clear rule for user input
+          this.whatIfRule.set(context.suggestion || ''); // Pre-fill rule
         }
       }
     });

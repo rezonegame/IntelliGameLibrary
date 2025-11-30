@@ -147,5 +147,40 @@ export const GAMES_C_W_Z: Game[] = [
       "designImpact": "“爬高”类游戏的典范，深刻影响了亚洲地区的卡牌游戏设计。它能极好地锻炼玩家的手牌管理、策略规划和时机判断能力。"
     },
     "variants": ["斗地主 (Dou Dizhu)", "升级 (Sheng Ji)"]
+  },
+  {
+    "id": 105,
+    "name": "战争",
+    "originalName": "War",
+    "image": createRandomPlaceholderSVG(),
+    "description": "一款极其简单的双人纸牌游戏，纯粹比较牌的点数大小，运气成分占100%。",
+    "players": { "min": 2, "max": 2 },
+    "playTime": { "min": 5, "max": 20 },
+    "complexity": "Very Low",
+    "category": "卡牌游戏",
+    "mechanics": ["运气"],
+    "componentsDescription": "一副标准的52张扑克牌。",
+    "historicalStory": "“战争”是世界上最简单、最广为人知的纸牌游戏之一，其历史悠久，难以追溯。它没有任何策略可言，完全由发牌顺序决定胜负。正因为如此，它常常是儿童学习比较数字大小的第一个工具。",
+    "modificationSuggestion": {
+      "themeSwaps": [
+        "怪兽对决: 两叠怪兽卡，翻开比较战斗力大小。",
+        "魔法对决: 魔法师翻开咒语卡，比较魔力值。"
+      ],
+      "mechanicFusions": [
+        "战争 + 策略卡: 每个玩家有几张一次性的“策略卡”，可以在翻牌前打出。例如：“增援”（本回合你可以翻两张牌，取点数大的）、“间谍”（偷看对方牌顶的一张牌）。"
+      ]
+    },
+    "rules": {
+      "objective": "赢得对手所有的牌。",
+      "setup": "将一副牌平均发给两位玩家，牌面向下。",
+      "gameplay": "两位玩家同时从自己的牌堆顶翻一张牌。点数大的玩家赢得两张牌，并将其放到自己牌堆的底部。如果两张牌点数相同，则进入“战争”状态：每位玩家再面朝下打出几张牌（例如3张），然后翻开下一张牌一决胜负。赢家拿走“战争”中的所有牌。"
+    },
+    "aiAnalysis": {
+      "coreFun": "纯粹的运气带来的不可预测性。",
+      "keyDecisions": "无。这是一个纯运气的游戏。",
+      "potentialFlaws": "毫无策略，游戏时间可能很长且乏味。",
+      "designImpact": "一个展示了游戏可以完全剥离决策，只剩下随机结果的极端例子。它能帮助儿童学习比较数字大小和轮流的概念。"
+    },
+    "variants": []
   }
 ];
