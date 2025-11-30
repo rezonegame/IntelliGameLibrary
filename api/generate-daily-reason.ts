@@ -10,12 +10,7 @@ const apiKey = process.env.GEMINI_API_KEY;
 // This function is the main handler for the serverless function.
 // Vercel requires this default export format.
 export default async function handler(request: any, response: any) {
-  // Allow CORS for requests from your Vercel domain
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight OPTIONS request for CORS
+  // Handle preflight OPTIONS request for CORS, now handled by vercel.json
   if (request.method === 'OPTIONS') {
     return response.status(200).end();
   }
@@ -30,7 +25,8 @@ export default async function handler(request: any, response: any) {
   }
 
   try {
-    const { gameName, date, randomTheme, randomMechanic } = JSON.parse(request.body);
+    // Vercel's body parser middleware automatically parses JSON, so request.body is already an object.
+    const { gameName, date, randomTheme, randomMechanic } = request.body;
 
     if (!gameName || !date || !randomTheme || !randomMechanic) {
       return response.status(400).json({ error: 'gameName, date, randomTheme, and randomMechanic are required.' });

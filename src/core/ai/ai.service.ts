@@ -7,7 +7,7 @@ import { OpenAIProvider } from './providers/openai.provider';
 import { DeepSeekProvider } from './providers/deepseek.provider';
 import { ClaudeProvider } from './providers/claude.provider';
 import { UiService } from '../services/ui.service';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
 const API_KEYS_STORAGE_ITEM = 'ai-api-keys';
 const CUSTOM_ENDPOINTS_STORAGE_ITEM = 'ai-custom-endpoints';
@@ -193,7 +193,7 @@ export class AiService {
 
   getDailyFocusData(gameName: string, date: string, randomTheme: string, randomMechanic: string): Observable<DailyFocusData> {
     const body = { gameName, date, randomTheme, randomMechanic };
-    return this.http.post<DailyFocusData>('/api/generate-daily-reason', JSON.stringify(body))
+    return this.http.post<DailyFocusData>('/api/generate-daily-reason', body)
       .pipe(
         catchError(error => {
           console.error('Failed to get daily focus data via proxy', error);
@@ -206,5 +206,19 @@ export class AiService {
           });
         })
       );
+  }
+
+  testServerConnection(): Observable<{ success: boolean; message: string }> {
+    return this.http.get<{ success: boolean; message:string }>('/api/test-gemini-key').pipe(
+        tap(response => {
+            this.toastService.show(response.message, response.success ? 'success' : 'error', 5000);
+        }),
+        catchError(error => {
+            const message = error.error?.message || '测试请求失败，请检查网络或服务器函数日志。';
+            this.toastService.show(message, 'error', 5000);
+            console.error('Server connection test failed', error);
+            return throwError(() => new Error(message));
+        })
+    );
   }
 }
