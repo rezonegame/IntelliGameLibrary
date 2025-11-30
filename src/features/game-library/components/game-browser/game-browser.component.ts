@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { GameCardSkeletonComponent } from '../game-card-skeleton/game-card-skeleton.component';
 import { UiService } from '../../../../core/services/ui.service';
-import { AiService } from '../../../../core/ai/ai.service';
+import { AiService, DailyFocusData } from '../../../../core/ai/ai.service';
 
 @Component({
   selector: 'app-game-browser',
@@ -21,22 +21,21 @@ import { AiService } from '../../../../core/ai/ai.service';
       @if (todayFocusGame(); as game) {
         <div class="mb-10">
           <h2 class="text-2xl font-bold text-slate-800 mb-4">今日聚焦</h2>
-          <div class="bg-gradient-to-br from-cyan-50 via-white to-sky-100 p-6 rounded-xl shadow-sm border border-cyan-200/50 flex flex-col md:flex-row items-center gap-8">
+          <div class="bg-gradient-to-r from-cyan-50 to-sky-100 p-6 rounded-xl shadow-sm border border-cyan-200/50 flex flex-col md:flex-row items-center gap-6 cursor-pointer transition-transform hover:scale-105" (click)="selectGame(game)">
             <img [src]="game.image" [alt]="game.name" 
-              class="w-full md:w-48 h-48 object-cover rounded-lg shadow-md border-2 border-white cursor-pointer transition-transform hover:scale-105" 
-              (click)="selectGame(game)">
+              class="w-full md:w-48 h-48 object-cover rounded-lg shadow-md border-2 border-white">
             <div class="flex-1">
-              <p class="text-sm font-semibold text-cyan-600 cursor-pointer" (click)="selectGame(game)">{{ game.category }}</p>
-              <h3 class="text-3xl font-bold text-slate-800 mt-1 cursor-pointer" (click)="selectGame(game)">{{ game.name }}</h3>
+              <p class="text-sm font-semibold text-cyan-600">{{ game.category }}</p>
+              <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ game.name }}</h3>
               
-              <div class="mt-3 text-base text-slate-600 italic border-l-4 border-cyan-200 pl-4 py-2 min-h-[5rem]">
-                @if (dailyFocusReasonIsLoading()) {
-                  <div class="space-y-2 animate-pulse">
-                    <div class="h-4 bg-slate-200 rounded w-full"></div>
-                    <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+              <div class="mt-4 text-lg text-slate-700 border-l-4 border-cyan-400 pl-4 py-2 min-h-[5rem] flex items-center">
+                @if (dailyFocusDataIsLoading()) {
+                  <div class="space-y-2 animate-pulse w-full">
+                    <div class="h-5 bg-slate-200 rounded w-full"></div>
+                    <div class="h-5 bg-slate-200 rounded w-5/6"></div>
                   </div>
-                } @else {
-                  <p>"{{ dailyFocusReason() }}"</p>
+                } @else if (dailyFocusData(); as data) {
+                  <p>{{ data.dailyReason }}</p>
                 }
               </div>
 
@@ -51,15 +50,35 @@ import { AiService } from '../../../../core/ai/ai.service';
            <!-- AI Inspiration Quick-links -->
           @if(remodelSuggestion(); as remodel) {
             <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button (click)="requestInspiration('remodel')" class="text-left p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-colors group">
+              <div (click)="requestInspiration('remodel')" class="p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-all group cursor-pointer">
                 <h4 class="font-semibold text-slate-800 group-hover:text-cyan-700">改造此游戏主题</h4>
                 <p class="text-sm text-slate-500 mt-1">将《{{ remodel.game.name }}》代入“{{ remodel.theme }}”主题会怎么样？</p>
-              </button>
+                @if (dailyFocusDataIsLoading()) {
+                  <div class="mt-3 space-y-2 animate-pulse">
+                    <div class="h-3 bg-slate-200 rounded w-3/4"></div>
+                    <div class="h-3 bg-slate-200 rounded w-full"></div>
+                  </div>
+                } @else if (dailyFocusData()?.remodelResult; as result) {
+                  <div class="mt-3 pt-3 border-t border-slate-200/80 text-sm text-slate-600">
+                    <p><strong>{{ result.newName }}:</strong> {{ result.worldbuilding }}</p>
+                  </div>
+                }
+              </div>
               @if(simulationSuggestion(); as simulation) {
-                <button (click)="requestInspiration('simulate')" class="text-left p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-colors group">
+                <div (click)="requestInspiration('simulate')" class="p-4 bg-slate-100 hover:bg-cyan-100/50 rounded-lg border border-slate-200 hover:border-cyan-300 transition-all group cursor-pointer">
                   <h4 class="font-semibold text-slate-800 group-hover:text-cyan-700">模拟规则变更</h4>
                   <p class="text-sm text-slate-500 mt-1">为《{{ simulation.game.name }}》引入“{{ simulation.mechanic }}”机制会怎么样？</p>
-                </button>
+                  @if (dailyFocusDataIsLoading()) {
+                    <div class="mt-3 space-y-2 animate-pulse">
+                      <div class="h-3 bg-slate-200 rounded w-3/4"></div>
+                      <div class="h-3 bg-slate-200 rounded w-full"></div>
+                    </div>
+                  } @else if (dailyFocusData()?.simulateResult; as result) {
+                    <div class="mt-3 pt-3 border-t border-slate-200/80 text-sm text-slate-600">
+                      <p><strong>策略影响:</strong> {{ result.impactOnStrategy }}</p>
+                    </div>
+                  }
+                </div>
               }
             </div>
           }
@@ -176,10 +195,10 @@ export class GameBrowserComponent {
   categoryFilter = signal('all');
   isSearching = signal(false);
 
-  // UX signals
+  // UX signals for Today's Focus
   todayFocusGame = signal<Game | null>(null);
-  dailyFocusReason = signal<string>('');
-  dailyFocusReasonIsLoading = signal(true);
+  dailyFocusData = signal<DailyFocusData | null>(null);
+  dailyFocusDataIsLoading = signal(true);
   remodelSuggestion = signal<{ game: Game, theme: string } | null>(null);
   simulationSuggestion = signal<{ game: Game, mechanic: string } | null>(null);
   
@@ -272,50 +291,55 @@ export class GameBrowserComponent {
     const game = games[index];
     this.todayFocusGame.set(game);
     
-    // Generate AI suggestions
+    // Generate AI suggestions prompts
     this.generateInspirationSuggestions(game);
     
-    // Fetch or get cached AI daily reason
-    this.getDailyFocusReason(game, today);
+    // Fetch or get cached AI daily data
+    this.fetchDailyFocusData(game, today);
   }
 
-  private getDailyFocusReason(game: Game, today: string) {
-    const cacheKey = `daily-focus-reason-${today}`;
+  private fetchDailyFocusData(game: Game, today: string) {
+    const cacheKey = `daily-focus-data-${today}`;
     const cachedData = localStorage.getItem(cacheKey);
+
     if (cachedData) {
-      const { gameId, reason } = JSON.parse(cachedData);
-      // Ensure cache is for the correct game of the day
+      const { gameId, data } = JSON.parse(cachedData);
       if (gameId === game.id) {
-        this.dailyFocusReason.set(reason);
-        this.dailyFocusReasonIsLoading.set(false);
+        this.dailyFocusData.set(data);
+        this.dailyFocusDataIsLoading.set(false);
         return;
       }
     }
     
     // If no valid cache, fetch from AI
-    this.dailyFocusReasonIsLoading.set(true);
-    this.aiService.generateDailyFocusReason(game.name).subscribe(reason => {
-        this.dailyFocusReason.set(reason);
-        localStorage.setItem(cacheKey, JSON.stringify({ gameId: game.id, reason }));
-        this.dailyFocusReasonIsLoading.set(false);
+    this.dailyFocusDataIsLoading.set(true);
+    const remodel = this.remodelSuggestion();
+    const simulation = this.simulationSuggestion();
+
+    if (!remodel || !simulation) {
+        this.dailyFocusDataIsLoading.set(false);
+        return;
+    }
+
+    this.aiService.getDailyFocusData(game.name, today, remodel.theme, simulation.mechanic).subscribe(data => {
+        this.dailyFocusData.set(data);
+        localStorage.setItem(cacheKey, JSON.stringify({ gameId: game.id, data }));
+        this.dailyFocusDataIsLoading.set(false);
     });
   }
 
   private generateInspirationSuggestions(game: Game) {
-    afterNextRender(() => {
-      untracked(() => {
-        const randomTheme = this.randomThemes[Math.floor(Math.random() * this.randomThemes.length)];
-        this.remodelSuggestion.set({ game, theme: randomTheme });
+    const randomTheme = this.randomThemes[Math.floor(Math.random() * this.randomThemes.length)];
+    this.remodelSuggestion.set({ game, theme: randomTheme });
 
-        const mechanics = this.allMechanics();
-        if (mechanics.length > 0) {
-          const gameMechanics = new Set(game.mechanics);
-          const potentialMechanics = mechanics.filter(m => !gameMechanics.has(m));
-          let randomMechanic = (potentialMechanics.length > 0 ? potentialMechanics : mechanics)[Math.floor(Math.random() * (potentialMechanics.length > 0 ? potentialMechanics.length : mechanics.length))];
-          this.simulationSuggestion.set({ game, mechanic: randomMechanic });
-        }
-      });
-    });
+    const mechanics = this.allMechanics();
+    if (mechanics.length > 0) {
+      const gameMechanics = new Set(game.mechanics);
+      const potentialMechanics = mechanics.filter(m => !gameMechanics.has(m));
+      const sourceMechanics = potentialMechanics.length > 0 ? potentialMechanics : mechanics;
+      const randomMechanic = sourceMechanics[Math.floor(Math.random() * sourceMechanics.length)];
+      this.simulationSuggestion.set({ game, mechanic: randomMechanic });
+    }
   }
 
   requestInspiration(type: 'remodel' | 'simulate') {

@@ -13,6 +13,12 @@ const API_KEYS_STORAGE_ITEM = 'ai-api-keys';
 const CUSTOM_ENDPOINTS_STORAGE_ITEM = 'ai-custom-endpoints';
 const ACTIVE_PROVIDER_STORAGE_ITEM = 'ai-active-provider';
 
+export interface DailyFocusData {
+  dailyReason: string;
+  remodelResult: { newName: string; worldbuilding: string };
+  simulateResult: { impactOnStrategy: string; overallConclusion: string };
+}
+
 @Injectable({ providedIn: 'root' })
 export class AiService {
   private http = inject(HttpClient);
@@ -185,15 +191,19 @@ export class AiService {
     return this.execute(p => p.simulateRuleChange(...args));
   }
 
-  generateDailyFocusReason(gameName: string): Observable<string> {
-    // This method now calls our own secure Vercel function instead of the AI provider directly.
-    return this.http.post<{ reason: string }>('/api/generate-daily-reason', JSON.stringify({ gameName }))
+  getDailyFocusData(gameName: string, date: string, randomTheme: string, randomMechanic: string): Observable<DailyFocusData> {
+    const body = { gameName, date, randomTheme, randomMechanic };
+    return this.http.post<DailyFocusData>('/api/generate-daily-reason', JSON.stringify(body))
       .pipe(
-        map(response => response.reason),
         catchError(error => {
-          console.error('Failed to generate daily focus reason via proxy', error);
-          this.toastService.show('获取每日推荐语失败', 'error');
-          return of('今天，就让这款经典游戏带你重温最纯粹的快乐吧！'); // Return a fallback
+          console.error('Failed to get daily focus data via proxy', error);
+          this.toastService.show('获取每日聚焦内容失败', 'error');
+          // Return a fallback object
+          return of({
+            dailyReason: '今天，就让这款经典游戏带你重温最纯粹的快乐吧！',
+            remodelResult: { newName: '加载失败', worldbuilding: '无法获取AI生成内容。' },
+            simulateResult: { impactOnStrategy: '加载失败', overallConclusion: '无法获取AI生成内容。' }
+          });
         })
       );
   }
