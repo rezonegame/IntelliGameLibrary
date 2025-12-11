@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
 import { UiService } from '../../../../core/services/ui.service';
-import { FeedbackService, InspirationIdea } from '../../../feedback/services/feedback.service';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 
 
 @Component({
@@ -160,7 +160,7 @@ export class InspirationWorkshopComponent {
   aiService = inject(AiService);
   gameService = inject(GameService);
   uiService = inject(UiService);
-  feedbackService = inject(FeedbackService);
+  analyticsService = inject(AnalyticsService);
 
   tabs = ['机制融合', '主题改造', '“假如”模拟器'];
   activeTab = signal(this.tabs[0]);
@@ -206,19 +206,13 @@ export class InspirationWorkshopComponent {
     );
   }
 
-  private async runGeneration(generator: () => Promise<any>, type: string, input: any) {
+  private async runGeneration(generator: () => Promise<any>, eventName: string) {
       this.isLoading.set(true);
       this.aiResult.set(null);
       try {
           const res = await generator();
           this.aiResult.set(res);
-          const idea: InspirationIdea = {
-            timestamp: new Date().toISOString(),
-            type,
-            input,
-            output: res
-          };
-          this.feedbackService.logInspirationIdea(idea).subscribe();
+          this.analyticsService.logEvent(eventName);
       } catch (error) {
           console.error("生成失败", error);
       } finally {
@@ -229,24 +223,21 @@ export class InspirationWorkshopComponent {
   generateFusion() {
     this.runGeneration(
       () => this.aiService.fuseMechanics(this.selectedMechanics()),
-      'fusion',
-      { mechanics: this.selectedMechanics() }
+      'inspiration:fuseMechanics'
     );
   }
 
   generateRemodel() {
     this.runGeneration(
       () => this.aiService.remodelTheme(this.remodelGame(), this.remodelTheme()),
-      'remodel',
-      { game: this.remodelGame(), theme: this.remodelTheme() }
+      'inspiration:remodelTheme'
     );
   }
 
   generateSimulation() {
     this.runGeneration(
       () => this.aiService.simulateRuleChange(this.whatIfGame(), this.whatIfRule()),
-      'simulation',
-      { game: this.whatIfGame(), rule: this.whatIfRule() }
+      'inspiration:simulateRuleChange'
     );
   }
 }
