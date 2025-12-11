@@ -185,6 +185,10 @@ export class AiService {
     return this.execute(p => p.simulateRuleChange(...args));
   }
 
+  generateDailyFocusReason(...args: Parameters<AiProvider['generateDailyFocusReason']>) {
+    return this.execute(p => p.generateDailyFocusReason(...args));
+  }
+
   testClientConnection(providerId: AiProviderType, key: string, endpoint?: string): Observable<{ success: boolean; message: string; }> {
     let providerInstance: AiProvider | null = null;
 

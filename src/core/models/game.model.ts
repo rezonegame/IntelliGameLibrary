@@ -33,6 +33,7 @@ export interface Game {
   aiAnalysis: AiAnalysis;
   variants: string[];
   tags?: string[];
+  likes?: number;
 }
 
 export interface AiAnalysis {

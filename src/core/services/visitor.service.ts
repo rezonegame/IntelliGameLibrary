@@ -1,6 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, EMPTY } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class VisitorService {
@@ -14,8 +14,11 @@ export class VisitorService {
     this.http.get<{ count: number }>(`${this.webhookUrl}?action=getVisitorCount`)
       .pipe(
         catchError(error => {
-          console.error('Failed to fetch visitor count', error);
-          return throwError(() => error);
+          // Log a clear message instead of the raw error object.
+          const message = (error as any)?.message || 'An unknown error occurred';
+          console.error(`Failed to fetch visitor count: ${message}`);
+          // Gracefully complete the stream on error.
+          return EMPTY;
         })
       )
       .subscribe(response => {

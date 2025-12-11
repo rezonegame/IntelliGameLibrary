@@ -9,7 +9,8 @@ export class AnalyticsService {
     // We send analytics events in a fire-and-forget manner.
     this.feedbackService.logAnalyticsEvent(eventType, eventData).subscribe({
       error: (err) => {
-        console.error(`Analytics event logging failed: ${eventType}`, err);
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error(`Analytics event logging failed: ${eventType}: ${errorMessage}`);
       }
     });
   }

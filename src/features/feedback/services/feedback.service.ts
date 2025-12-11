@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ToastService } from '../../../core/services/toast.service';
-import { catchError, tap, throwError, Observable } from 'rxjs';
+import { catchError, tap, throwError, Observable, of } from 'rxjs';
 import { Message } from '../../../core/models/message.model';
 
 export interface NewMessage {
@@ -30,9 +30,11 @@ export class FeedbackService {
 
   private handleError(operation: string) {
     return (error: unknown): Observable<never> => {
-      console.error(`${operation} failed`, error);
+      const message = (error as any)?.message || 'An unknown error occurred';
+      console.error(`${operation} failed: ${message}`);
       this.toastService.show(`${operation}失败，请稍后重试`, 'error');
-      return throwError(() => error);
+      // Create a new, simple, and serializable error object.
+      return throwError(() => new Error(`${operation} failed.`));
     };
   }
 
@@ -71,8 +73,9 @@ export class FeedbackService {
     };
     return this.http.post(`${this.webhookUrl}?action=logAnalytics`, payload).pipe(
       catchError(err => {
-        console.error('Analytics log failed', err);
-        return throwError(() => err);
+        const message = (err as any)?.message || 'An unknown error occurred';
+        console.error(`Analytics log failed: ${message}`);
+        return of(null); // Gracefully complete without propagating error
       })
     );
   }
@@ -80,8 +83,9 @@ export class FeedbackService {
   logInspirationIdea(idea: InspirationIdea): Observable<any> {
     return this.http.post(`${this.webhookUrl}?action=logIdea`, idea).pipe(
       catchError(error => {
-        console.error('Failed to log inspiration idea', error);
-        return throwError(() => error);
+        const message = (error as any)?.message || 'An unknown error occurred';
+        console.error(`Failed to log inspiration idea: ${message}`);
+        return of(null); // Gracefully complete without propagating error
       })
     );
   }

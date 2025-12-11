@@ -26,7 +26,7 @@ import { UiService } from '../../../../core/services/ui.service';
               <p class="text-sm font-semibold text-cyan-600">{{ game.category }}</p>
               <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ game.name }}</h3>
               
-              <div class="mt-4 text-lg text-slate-700 border-l-4 border-cyan-400 pl-4 py-2">
+              <div class="mt-4 text-lg text-slate-700 border-l-4 border-cyan-400 pl-4 py-2 min-h-[60px]">
                 <p>{{ dailyReason() }}</p>
               </div>
 
@@ -166,7 +166,7 @@ export class GameBrowserComponent {
 
   // UX signals for Today's Focus
   todayFocusGame = signal<Game | null>(null);
-  dailyReason = signal<string>('');
+  dailyReason = signal<string>('正在加载今日推荐语...');
   remodelSuggestion = signal<{ game: Game, theme: string } | null>(null);
   simulationSuggestion = signal<{ game: Game, mechanic: string } | null>(null);
   
@@ -270,8 +270,14 @@ export class GameBrowserComponent {
     // Generate inspiration suggestions prompts
     this.generateInspirationSuggestions(game);
     
-    // Generate local daily reason
-    this.dailyReason.set(this.generateLocalDailyReason(game, season));
+    // Get daily reason from service (AI-driven with local fallback)
+    this.gameService.getAiDailyReason(game).subscribe(reason => {
+      if (reason) {
+        this.dailyReason.set(reason);
+      } else {
+        this.dailyReason.set(this.generateLocalDailyReason(game, season));
+      }
+    });
   }
   
   private generateLocalDailyReason(game: Game, season: string): string {

@@ -108,10 +108,7 @@ import { AnalyticsService } from '../core/services/analytics.service';
         <h4 class="font-semibold text-slate-800 mb-2">更新日志</h4>
         <ul class="list-disc list-inside space-y-1.5 pl-1">
           <li><b>v3.0:</b> 恢复访客统计、留言板和后台分析功能。</li>
-          <li><b>v2.9:</b> 架构简化，移除所有后端服务依赖，提升应用速度与稳定性。</li>
           <li><b>v2.8:</b> 新增客户端 AI 服务“连接测试”功能。</li>
-          <li><b>v2.7:</b> 新增“测试服务器连接”功能，用于验证 Vercel 环境变量配置。</li>
-          <li><b>v2.6:</b> “今日聚焦”升级为由服务器 AI 驱动，提供每日推荐语和灵感范例。</li>
           <li><b>v2.5:</b> 新增“今日聚焦”AI灵感推荐，一键探索游戏改造新玩法。</li>
           <li><b>v2.4:</b> AI 服务智能切换优化，提升启动体验。</li>
         </ul>
