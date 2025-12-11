@@ -25,10 +25,28 @@ export default async function handler(
     return response.status(200).end();
   }
 
-  const { action, username, content, event } = request.query;
+  const { action, gameId, username, content, event } = request.query;
 
   try {
     switch (action) {
+      case 'getVisitorCount': {
+        const count: number | null = await kv.get('visitorCount');
+        return response.status(200).json({ count: count || 0 });
+      }
+      case 'incrementVisitorCount': {
+        const newCount = await kv.incr('visitorCount');
+        return response.status(200).json({ count: newCount });
+      }
+      case 'getGameLikes': {
+        const likes: Record<string, number> | null = await kv.hgetall('gameLikes');
+        return response.status(200).json(likes || {});
+      }
+      case 'likeGame': {
+        if (!gameId) return response.status(400).json({ error: 'gameId is required' });
+        await kv.hincrby('gameLikes', String(gameId), 1);
+        const allLikes = await kv.hgetall('gameLikes');
+        return response.status(200).json(allLikes || {});
+      }
       case 'getMessages': {
         const messages: Message[] = await kv.lrange('messages', 0, 50);
         return response.status(200).json(messages || []);

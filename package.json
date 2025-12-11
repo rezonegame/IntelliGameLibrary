@@ -20,7 +20,6 @@
     "@angular-devkit/build-angular": "21.0.0",
     "@angular/cli": "21.0.0",
     "@angular/compiler-cli": "21.0.0",
-    "@cfworker/json-schema": "^0.10.1",
     "@types/node": "^20.14.9",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.9.3"
