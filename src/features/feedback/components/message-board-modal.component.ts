@@ -30,7 +30,8 @@ import { LoaderComponent } from '../../../core/ui/loader/loader.component';
           <div class="flex justify-between items-center">
             <input 
               type="text"
-              [(ngModel)]="username"
+              [ngModel]="username()"
+              (ngModelChange)="username.set($event)"
               placeholder="您的昵称"
               class="px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition w-48 text-sm"
               [disabled]="feedbackService.isLoading()"
@@ -38,7 +39,7 @@ import { LoaderComponent } from '../../../core/ui/loader/loader.component';
             />
             <button 
               (click)="submitMessage()"
-              [disabled]="feedbackService.isLoading() || !newMessage.trim() || !username.trim()"
+              [disabled]="feedbackService.isLoading() || !newMessage.trim() || !username().trim()"
               class="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md hover:bg-cyan-700 transition-colors disabled:bg-cyan-400 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]">
                 @if (feedbackService.isLoading() && !feedbackService.messages().length) {
                   <app-loader></app-loader>
