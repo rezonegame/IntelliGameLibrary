@@ -6,7 +6,7 @@ import { catchError, throwError } from 'rxjs';
 export class VisitorService {
   private http = inject(HttpClient);
 
-  private readonly webhookUrl = '/api/proxy-google-script';
+  private readonly webhookUrl = '/api/kv-proxy';
 
   visitorCount = signal<number | null>(null);
 

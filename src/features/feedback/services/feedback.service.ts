@@ -26,7 +26,7 @@ export class FeedbackService {
   private http: HttpClient = inject(HttpClient);
   private toastService = inject(ToastService);
   
-  private webhookUrl = '/api/proxy-google-script';
+  private webhookUrl = '/api/kv-proxy';
 
   private handleError(operation: string) {
     return (error: unknown): Observable<never> => {
