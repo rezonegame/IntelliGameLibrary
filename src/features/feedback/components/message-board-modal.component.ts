@@ -87,7 +87,6 @@ export class MessageBoardModalComponent implements OnInit {
     this.username.set(localStorage.getItem('intell-game-username') || '');
   }
 
-  
   submitMessage() {
     const user = this.username().trim();
     const content = this.newMessage.trim();

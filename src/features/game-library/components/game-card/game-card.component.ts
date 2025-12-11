@@ -1,7 +1,6 @@
-import { Component, input, output, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { Game } from '../../../../core/models/game.model';
 import { CommonModule } from '@angular/common';
-import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-game-card',
@@ -24,15 +23,6 @@ import { GameService } from '../../services/game.service';
                 <span class="bg-slate-100 px-2 py-1 rounded-full text-slate-600 font-medium">{{ game()!.playTime.min }}-{{ game()!.playTime.max }} 分钟</span>
                 <span class="bg-slate-100 px-2 py-1 rounded-full text-slate-600 font-medium">{{ game()!.category }}</span>
             </div>
-            <button (click)="likeGame($event)" [disabled]="isLiked()" [title]="isLiked() ? '已点赞' : '点赞'"
-                    class="flex items-center gap-1.5 text-slate-400 disabled:text-red-500 hover:text-red-500 transition-colors focus:outline-none p-1 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" [attr.fill]="isLiked() ? 'currentColor' : 'none'" stroke="currentColor">
-                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                </svg>
-                @if(likes() > 0) {
-                    <span class="text-sm font-medium">{{ likes() }}</span>
-                }
-            </button>
           </div>
         </div>
       </div>
@@ -43,13 +33,4 @@ import { GameService } from '../../services/game.service';
 export class GameCardComponent {
   game = input.required<Game>();
   viewDetails = output();
-  gameService = inject(GameService);
-
-  isLiked = computed(() => this.gameService.likedGames().has(this.game().id));
-  likes = computed(() => this.gameService.gameLikesCount()[this.game().id] || 0);
-
-  likeGame(event: MouseEvent) {
-    event.stopPropagation(); // Prevent card click from opening the detail modal
-    this.gameService.likeGame(this.game());
-  }
 }

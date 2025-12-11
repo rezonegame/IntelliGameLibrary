@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, output } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { AiService } from '../core/ai/ai.service';
 import { UiService } from '../core/services/ui.service';
-import { VisitorService } from '../core/services/visitor.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -48,11 +47,6 @@ import { VisitorService } from '../core/services/visitor.service';
                     {{ aiService.isConfigured() ? '(已激活)' : '(未配置)' }}
                   </span>
               </p>
-              <p>访客总数: 
-                <span class="font-semibold text-slate-600">
-                  {{ visitorService.visitorCount() ?? '加载中...' }}
-                </span>
-              </p>
           </div>
           <button (click)="uiService.openApiKeyModal(); closeMenu.emit()" class="w-full text-sm text-center text-cyan-600 hover:text-cyan-700 transition-colors font-medium">
               配置 AI 服务
@@ -69,6 +63,5 @@ import { VisitorService } from '../core/services/visitor.service';
 export class SidebarComponent {
   aiService = inject(AiService);
   uiService = inject(UiService);
-  visitorService = inject(VisitorService);
   closeMenu = output();
 }
