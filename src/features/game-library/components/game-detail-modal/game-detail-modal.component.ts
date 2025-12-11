@@ -3,7 +3,6 @@ import { Game } from '../../../../core/models/game.model';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../../core/services/toast.service';
 import { UiService } from '../../../../core/services/ui.service';
-import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-game-detail-modal',
@@ -32,20 +31,13 @@ import { GameService } from '../../services/game.service';
                 <div class="md:col-span-1">
                   <img [src]="game.image" [alt]="game.name" class="w-full rounded-lg shadow-md border border-slate-200">
                   
-                  <div class="mt-4 grid grid-cols-2 gap-2">
+                  <div class="mt-4 grid grid-cols-1 gap-2">
                       <button (click)="shareGame()" 
                               class="w-full flex items-center justify-center px-4 py-3 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.002l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.366a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.002l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.366a3 3 0 105.367 2.684 3 3 0 00-5.367 2.684z" />
                         </svg>
                         <span>分享</span>
-                      </button>
-                      <button (click)="likeGame()" [disabled]="isLiked()" [title]="isLiked() ? '已点赞' : '点赞'"
-                              class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white text-slate-600 font-semibold rounded-lg shadow-md hover:bg-red-50 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400 disabled:bg-red-50 disabled:text-red-500 border border-slate-200">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" [attr.fill]="isLiked() ? 'currentColor' : 'none'" stroke="currentColor">
-                              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                          </svg>
-                          <span>{{ game.likes || 0 }}</span>
                       </button>
                   </div>
 
@@ -179,7 +171,6 @@ export class GameDetailModalComponent {
   close = output();
   private toastService = inject(ToastService);
   private uiService = inject(UiService);
-  private gameService = inject(GameService);
 
   aiAnalysisItems = computed(() => {
     const analysis = this.game()?.aiAnalysis;
@@ -192,23 +183,11 @@ export class GameDetailModalComponent {
     ];
   });
 
-  isLiked = computed(() => {
-    const g = this.game();
-    return g ? this.gameService.likedGames().has(g.id) : false;
-  });
-
-  likeGame() {
-    const g = this.game();
-    if (g) {
-      this.gameService.likeGame(g);
-    }
-  }
-
   shareGame() {
     const game = this.game();
     if (!game) return;
 
-    const shareUrl = `https://txtbg.cn/#game=${game.id}`;
+    const shareUrl = `${window.location.origin}${window.location.pathname}#game=${game.id}`;
     const descriptionSnippet = game.description.length > 50 ? game.description.substring(0, 50) + '...' : game.description;
     const shareText = `我发现一款很棒的游戏：《${game.name}》。\n${descriptionSnippet}\n快来“智游图鉴”看看吧！\n${shareUrl}`;
 

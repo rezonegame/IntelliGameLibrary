@@ -1,8 +1,6 @@
 export interface Message {
   id: string;
+  username: string;
+  content: string;
   timestamp: string;
-  name: string;
-  message: string;
-  reply: string;
-  replyTimestamp: string;
 }

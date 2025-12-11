@@ -7,16 +7,15 @@
       "projectType": "application",
       "schematics": {},
       "root": "",
-      "sourceRoot": ".",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/intell-game-library",
+            "outputPath": "dist",
             "index": "index.html",
-            "main": "index.tsx",
-            "polyfills": [],
+            "browser": "index.tsx",
             "tsConfig": "tsconfig.json",
             "assets": [],
             "styles": [],
@@ -28,7 +27,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "2mb"
+                  "maximumError": "1.5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -39,12 +38,9 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"

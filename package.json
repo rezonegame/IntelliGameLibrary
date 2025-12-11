@@ -1,12 +1,7 @@
 {
   "name": "intell-game-library",
   "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development"
-  },
+  "scripts": {},
   "private": true,
   "dependencies": {
     "@angular/common": "21.0.0",
@@ -25,9 +20,10 @@
     "@angular-devkit/build-angular": "21.0.0",
     "@angular/cli": "21.0.0",
     "@angular/compiler-cli": "21.0.0",
+    "@cfworker/json-schema": "^0.10.1",
     "@types/node": "^20.14.9",
     "@types/uuid": "^10.0.0",
-    "tailwindcss": "^3.4.1",
+    "@vercel/node": "^5.5.15",
     "typescript": "^5.9.3"
   }
 }
