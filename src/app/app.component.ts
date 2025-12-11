@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, afterNextRender } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, OnInit, afterNextRender, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameBrowserComponent } from '../features/game-library/components/game-browser/game-browser.component';
 import { AiIdentifierComponent } from '../features/ai-tools/components/ai-identifier/ai-identifier.component';
@@ -11,6 +11,7 @@ import { Game } from '../core/models/game.model';
 import { TipModalComponent } from '../core/ui/tip-modal/tip-modal.component';
 import { UiService } from '../core/services/ui.service';
 import { MessageBoardModalComponent } from '../features/feedback/components/message-board-modal.component';
+import { AnalyticsService } from '../core/services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -63,34 +64,26 @@ import { MessageBoardModalComponent } from '../features/feedback/components/mess
 </div>
 
 <!-- FABs Container -->
-<div class="fixed bottom-6 right-6 z-40 flex flex-col items-center">
-    @if(isFabMenuOpen()) {
-      <div class="flex flex-col items-center mb-3 space-y-3 animate-fade-in-up-fast">
-        <!-- Feedback FAB -->
-        <button (click)="openMessageBoard()"
-                title="留言板"
-                class="bg-white text-slate-700 p-3 rounded-full shadow-lg hover:bg-slate-100 hover:scale-110 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-        </button>
-        <!-- Help FAB -->
-        <button (click)="openHelp()"
-                title="帮助与更新"
-                class="bg-white text-slate-700 p-3 rounded-full shadow-lg hover:bg-slate-100 hover:scale-110 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </button>
-      </div>
-    }
-    <!-- Main FAB Toggle -->
-    <button (click)="isFabMenuOpen.set(!isFabMenuOpen())"
-            [class]="'p-4 rounded-full shadow-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-transform duration-200 z-10 ' + (isFabMenuOpen() ? 'rotate-45 bg-slate-600 hover:bg-slate-700' : 'bg-cyan-600 hover:bg-cyan-700')">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+<div class="fixed bottom-6 right-6 z-40" (mouseenter)="isFabMenuOpen.set(true)" (mouseleave)="isFabMenuOpen.set(false)">
+  <div class="relative flex flex-col items-center space-y-3">
+    <!-- Feedback FAB (Secondary) -->
+    <button (click)="openFeedbackModal()"
+            title="留言反馈"
+            [class]="'bg-white border border-slate-200 text-slate-500 p-3 rounded-full shadow-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-200 ease-in-out ' + (isFabMenuOpen() ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2 pointer-events-none')">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428a1 1 0 00.475 0l5 1.428a1 1 0 001.17-1.408l-7-14z" />
       </svg>
     </button>
+    
+    <!-- Help & Updates FAB (Primary) -->
+    <button (click)="isHelpVisible.set(true)"
+            title="帮助与更新"
+            class="bg-cyan-600 text-white p-4 rounded-full shadow-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-transform hover:scale-110 z-10">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </button>
+  </div>
 </div>
 
 
@@ -114,10 +107,10 @@ import { MessageBoardModalComponent } from '../features/feedback/components/mess
       <div>
         <h4 class="font-semibold text-slate-800 mb-2">更新日志</h4>
         <ul class="list-disc list-inside space-y-1.5 pl-1">
-          <li><b>v4.0:</b> 重新集成后端服务，支持点赞、留言板和访客统计。</li>
-          <li><b>v3.1:</b> 移除所有后端依赖，实现纯客户端运行。</li>
+          <li><b>v3.0:</b> 恢复访客统计、留言板和后台分析功能。</li>
           <li><b>v2.8:</b> 新增客户端 AI 服务“连接测试”功能。</li>
-          <li><b>v2.5:</b> 新增“今日聚焦”AI灵感推荐。</li>
+          <li><b>v2.5:</b> 新增“今日聚焦”AI灵感推荐，一键探索游戏改造新玩法。</li>
+          <li><b>v2.4:</b> AI 服务智能切换优化，提升启动体验。</li>
         </ul>
       </div>
     </div>
@@ -127,6 +120,9 @@ import { MessageBoardModalComponent } from '../features/feedback/components/mess
 @if (uiService.isApiKeyModalOpen()) {
   <app-api-key-modal (close)="uiService.closeApiKeyModal()"></app-api-key-modal>
 }
+@if (isFeedbackModalOpen()) {
+  <app-message-board-modal (close)="closeFeedbackModal()"></app-message-board-modal>
+}
 @if (isTipModalOpen() && tipGame()) {
   <app-tip-modal 
     [game]="tipGame()!" 
@@ -134,25 +130,21 @@ import { MessageBoardModalComponent } from '../features/feedback/components/mess
     (viewDetails)="viewTipGameDetails()">
   </app-tip-modal>
 }
-@if (isMessageBoardOpen()) {
-  <app-message-board-modal (close)="isMessageBoardOpen.set(false)"></app-message-board-modal>
-}
 <app-toast-container></app-toast-container>
   `,
   styles: [`
     @keyframes fade-in-up {
-      from { opacity: 0; transform: translateY(20px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
     .animate-fade-in-up {
       animation: fade-in-up 0.2s ease-out forwards;
-    }
-    @keyframes fade-in-up-fast {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in-up-fast {
-      animation: fade-in-up-fast 0.15s ease-out forwards;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -160,16 +152,21 @@ import { MessageBoardModalComponent } from '../features/feedback/components/mess
 export class AppComponent implements OnInit {
   uiService = inject(UiService);
   private gameService = inject(GameService);
+  private analyticsService = inject(AnalyticsService);
 
   isMobileMenuOpen = signal(false);
   isHelpVisible = signal(false);
   isFabMenuOpen = signal(false);
-  isMessageBoardOpen = signal(false);
+  isFeedbackModalOpen = signal(false);
 
   tipGame = signal<Game | null>(null);
   isTipModalOpen = signal(false);
 
-  constructor() { }
+  constructor() {
+    effect(() => {
+      this.analyticsService.logEvent('pageView', this.uiService.currentView());
+    });
+  }
 
   ngOnInit() {
     const sharedGameHandled = this.handleSharedGameLink();
@@ -178,14 +175,12 @@ export class AppComponent implements OnInit {
     }
   }
 
-  openMessageBoard() {
-    this.isMessageBoardOpen.set(true);
-    this.isFabMenuOpen.set(false);
+  openFeedbackModal() {
+    this.isFeedbackModalOpen.set(true);
   }
 
-  openHelp() {
-    this.isHelpVisible.set(true);
-    this.isFabMenuOpen.set(false);
+  closeFeedbackModal() {
+    this.isFeedbackModalOpen.set(false);
   }
 
   private handleSharedGameLink(): boolean {

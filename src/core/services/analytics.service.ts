@@ -1,22 +1,17 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { FeedbackService } from '../../features/feedback/services/feedback.service';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private http = inject(HttpClient);
+  private feedbackService = inject(FeedbackService);
 
-  logEvent(eventName: string) {
-    const params = new HttpParams()
-      .set('action', 'logAnalytics')
-      .set('event', eventName);
-
-    // Fire and forget
-    this.http.get('/api/kv-proxy', { params }).pipe(
-      catchError(err => {
-        console.error('Analytics log failed:', err);
-        return of(null);
-      })
-    ).subscribe();
+  logEvent(eventType: string, eventData: string) {
+    // We send analytics events in a fire-and-forget manner.
+    this.feedbackService.logAnalyticsEvent(eventType, eventData).subscribe({
+      error: (err) => {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error(`Analytics event logging failed: ${eventType}: ${errorMessage}`);
+      }
+    });
   }
 }

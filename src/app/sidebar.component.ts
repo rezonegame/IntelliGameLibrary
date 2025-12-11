@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, output, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AiService } from '../core/ai/ai.service';
 import { UiService } from '../core/services/ui.service';
@@ -48,11 +48,9 @@ import { VisitorService } from '../core/services/visitor.service';
                     {{ aiService.isConfigured() ? '(已激活)' : '(未配置)' }}
                   </span>
               </p>
-              <p>访客总数: 
-                <span class="font-semibold text-slate-600">
-                  {{ visitorService.visitorCount() ?? '加载中...' }}
-                </span>
-              </p>
+              @if(visitorService.visitorCount(); as count) {
+                <p>访问人次: <span class="font-semibold text-slate-600">{{ count }}</span></p>
+              }
           </div>
           <button (click)="uiService.openApiKeyModal(); closeMenu.emit()" class="w-full text-sm text-center text-cyan-600 hover:text-cyan-700 transition-colors font-medium">
               配置 AI 服务
@@ -66,9 +64,13 @@ import { VisitorService } from '../core/services/visitor.service';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   aiService = inject(AiService);
   uiService = inject(UiService);
   visitorService = inject(VisitorService);
   closeMenu = output();
+
+  ngOnInit() {
+    this.visitorService.fetchAndIncrementCount();
+  }
 }
