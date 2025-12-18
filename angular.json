@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/angular",
             "index": "index.html",
             "browser": "index.tsx",
             "tsConfig": "tsconfig.json",
