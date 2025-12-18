@@ -1,7 +1,9 @@
 {
   "name": "intell-game-library",
   "version": "0.0.0",
-  "scripts": {},
+  "scripts": {
+    "build": "ng build"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "21.0.0",
